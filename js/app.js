@@ -25,7 +25,7 @@ var numberOfMonsters = monstersArray.length;
 // console.log("numberOFMonsters: ", numberOfMonsters);
 var levelsArray = [3, 4, 5];
 var currentLevel = 0;
-// CREATE GAME PIECES BY LEVEL
+// CREATE & STORE gameArray GLOBALLY
 var gameArray = createGameArray();
 console.log(gameArray);
 //
@@ -98,6 +98,7 @@ function createSwitchPiece() {
   var localMonsterIdx = createRandomM();
   var switchPiece = monstersArray[localMonsterIdx].symbol;
   $("#switch-piece").html(switchPiece);
+  return switchPiece;
 }
 //
 // RUN GAMEBOARD
@@ -108,17 +109,24 @@ function runGameBoard(array) {
   // COMBINE GAME BOARD + GAME PIECES
   var  singleGamePieceArray = createSingleGamePieceArray(array);
   addGamePiecesToHtml(singleGamePieceArray);
-  // CREATE SWITCH PIECE
-  createSwitchPiece();
+
 }
+//
 // CALL RUN GAME BOARD
 runGameBoard(gameArray);
+//
+// CREATE & STORE currentSwitchPiece GLOBALLY
+var currentSwitchPiece = createSwitchPiece();
 //
 // EVENT LISTENERS
 // event listener for each board piece
 $(".box").click(function (e) {
   e.preventDefault();
-  alert('clicked');
+  var localStore = $(this).html();
+  console.log(localStore);
+  $(this).html(currentSwitchPiece);
+  currentSwitchPiece = localStore;
+  $("#switch-piece").html(currentSwitchPiece);
 
 
 });
