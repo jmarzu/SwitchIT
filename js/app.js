@@ -65,12 +65,11 @@ console.log("gameArray: ", gameArray);
 //  Add css styles for rows
 function createDivRows(array) {
   array.forEach(function(e) {
-    $('#board').html("<div id='row'></div>")
+    $('#board').html("<div class='row'></div>")
     // add class
   });
-
-
 }
+createDivRows(gameArray);
 // F:createDivBoxes: HTML boxes per row = current level
 //  Add box IDs 1 thru totalboxes
 //  Add css styles for each monster
