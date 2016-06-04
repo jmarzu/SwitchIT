@@ -26,9 +26,10 @@ var numberOfMonsters = monstersArray.length;
 // console.log("numberOFMonsters: ", numberOfMonsters);
 var levelsArray = [3, 4, 5];
 var currentLevel = 0;
+// CREATE GAME PIECES BY LEVEL
 var gameArray = createGameArray();
 //
-// CREATE GAME PIECES BY LEVEL - 3 FUNCTIONS
+// CREATE GAME PIECES BY LEVEL
 // F:createGameArray: create 2D array with random monsters using F:createRow
 function createGameArray () {
   var localArray = [];
@@ -59,7 +60,7 @@ function createRandomM() {
   return Math.floor(Math.random() * numberOfMonsters);
 }
 //
-// CREATE GAME BLANK BOARD - 2 FUNCTIONS
+// CREATE BLANK GAME BOARD
 // F:createDivRows: HTML number of rows = current level
 function createDivRows(array) {
   $(array).each(function() {
@@ -74,7 +75,7 @@ function createDivBoxes(array) {
   });
 }
 //
-//COMBINE GAME BOARD + GAME PIECES
+// COMBINE GAME BOARD + GAME PIECES
 // F:createSingleGamePieceArray
 function createSingleGamePieceArray(array) {
   localArray = [];
@@ -82,14 +83,16 @@ function createSingleGamePieceArray(array) {
     // // console.log("idx: ", idx);
     $.merge(localArray, element);
   });
-  console.log("localArray: ", localArray);
+  // console.log("localArray: ", localArray);
   return localArray;
 }
-// F:addGameBoardToHtml
-// function addGamePiecesToHtml(array) {
-//   $('.box').each(fucntion(e))
-
-// }
+// F:addGamePiecesToHtml
+function addGamePiecesToHtml(array) {
+  $(".box").each(function(idx, e) {
+    $(e).attr("id", idx);
+    $(e).html(array[idx]);
+  });
+}
 
     // $(".row").appendTo("<div class='box'></div>");
     // // $(".box").attr("id", id);
@@ -103,10 +106,13 @@ function createSingleGamePieceArray(array) {
 
 // RUN GAMEBOARD
 function runGameBoard(array) {
+  // CREATE BLANK GAME BOARD
   createDivRows(array);
   createDivBoxes(array);
-  var temp = addGameBoardToHtml(array);
-  console.log("single array: ", temp);
+  // COMBINE GAME BOARD + GAME PIECES
+  var  singleGamePieceArray = createSingleGamePieceArray(array);
+  // console.log("sArray: ", singleGamePieceArray);
+  addGamePiecesToHtml(singleGamePieceArray);
 }
 
 runGameBoard(gameArray);
