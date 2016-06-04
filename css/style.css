@@ -2,6 +2,16 @@ h1 {
   color: rebeccapurple;
   }
 .row {
-  border: 1px solid gray;
-  height: 20px;
+  float: left;
+  width: 100%;
+}
+
+.box {
+  float: left;
+  border: 1px solid purple;
+  height: 100px;
+  width: 100px;
+  font-size: 75px;
+  text-align: center;
+  line-height: 100px;
 }
