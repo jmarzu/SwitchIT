@@ -23,12 +23,12 @@ var monstersArray = [
   }
 ];
 var numberOfMonsters = monstersArray.length;
-console.log("numberOFMonsters: ", numberOfMonsters);
+// console.log("numberOFMonsters: ", numberOfMonsters);
 var levelsArray = [3, 4, 5];
 var currentLevel = 0;
 var gameArray = createGameArray();
-
-// CREATE GAME LEVEL - 3 FUNCTIONS
+//
+// CREATE GAME PIECES BY LEVEL - 3 FUNCTIONS
 // F:createGameArray: create 2D array with random monsters using F:createRow
 function createGameArray () {
   var localArray = [];
@@ -42,14 +42,15 @@ function createGameArray () {
 function createRow() {
   var localArray = [];
   var localRows = levelsArray[currentLevel];
-  console.log("localRows: ", localRows);
+  // console.log("localRows: ", localRows);
   for (var i = 0; i < localRows; i++) {
     var localMonsterNum = createRandomM();
-    console.log("localMonsterNum: ", localMonsterNum);
+    // console.log("localMonsterNum: ", localMonsterNum);
     localArray.push(monstersArray[localMonsterNum].symbol);
   }
   return localArray;
 }
+//
 // CREATE RANDOM MONSTER
 // F:createRandomM: create 1 of 3 random monsters
 function createRandomM() {
@@ -57,22 +58,13 @@ function createRandomM() {
 // Random number logic
   return Math.floor(Math.random() * numberOfMonsters);
 }
-
-// Process Outline
-
-// console.log("gameArray: ", gameArray);
-
-// CREATE GAME BOARD
+//
+// CREATE GAME BLANK BOARD - 2 FUNCTIONS
 // F:createDivRows: HTML number of rows = current level
-//  Add css styles for rows
 function createDivRows(array) {
   $(array).each(function() {
     $("#board").append("<div class='row'></div>");
   });
-  // array.forEach(function(e) {
-  //   console.log("e:", e);
-  //   $("#board").append("<div class='row'></div>");
-  // });
 }
 // F:createDivBoxes: HTML boxes per row = current level
 function createDivBoxes(array) {
@@ -81,11 +73,24 @@ function createDivBoxes(array) {
     $(".row").append("<div class='box'></div>");
   });
 }
+//
+//COMBINE GAME BOARD + GAME PIECES
+// F:createSingleGamePieceArray
+function createSingleGamePieceArray(array) {
+  localArray = [];
+  $(array).each(function(idx, element) {
+    // // console.log("idx: ", idx);
+    $.merge(localArray, element);
+  });
+  console.log("localArray: ", localArray);
+  return localArray;
+}
+// F:addGameBoardToHtml
+// function addGamePiecesToHtml(array) {
+//   $('.box').each(fucntion(e))
 
-// function addGameBoardToHTML (array) {
-//   localId = 1;
-//   array.forEach
 // }
+
     // $(".row").appendTo("<div class='box'></div>");
     // // $(".box").attr("id", id);
     // $(".box").html(array[i]);
@@ -100,6 +105,8 @@ function createDivBoxes(array) {
 function runGameBoard(array) {
   createDivRows(array);
   createDivBoxes(array);
+  var temp = addGameBoardToHtml(array);
+  console.log("single array: ", temp);
 }
 
 runGameBoard(gameArray);
