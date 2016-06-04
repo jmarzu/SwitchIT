@@ -1,6 +1,7 @@
 h1 {
   color: rebeccapurple;
   }
-div {
+.row {
   border: 1px solid gray;
+  height: 20px;
 }
