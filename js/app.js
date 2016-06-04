@@ -45,9 +45,9 @@ function createRow() {
   var localRows = levelsArray[currentLevel];
   // console.log("localRows: ", localRows);
   for (var i = 0; i < localRows; i++) {
-    var localMonsterNum = createRandomM();
-    // console.log("localMonsterNum: ", localMonsterNum);
-    localArray.push(monstersArray[localMonsterNum].symbol);
+    var localMonsterIdx = createRandomM();
+    // console.log("localMonsterIdx: ", localMonsterIdx);
+    localArray.push(monstersArray[localMonsterIdx].symbol);
   }
   return localArray;
 }
@@ -55,7 +55,6 @@ function createRow() {
 // CREATE RANDOM MONSTER
 // F:createRandomM: create 1 of 3 random monsters
 function createRandomM() {
-// inputs? obj props?
 // Random number logic
   return Math.floor(Math.random() * numberOfMonsters);
 }
@@ -95,11 +94,11 @@ function addGamePiecesToHtml(array) {
 }
 //
 // CREATE SWITCH PIECE
-// function createSwitchPiece() {
-//   var monsterIndex: createRandomM();
-//   var switchPiece = monstersArray[monsterIndex].symbol;
-//   $("#switch-piece").html(switchPiece);
-// }
+function createSwitchPiece() {
+  var localMonsterIdx = createRandomM();
+  var switchPiece = monstersArray[localMonsterIdx].symbol;
+  $("#switch-piece").html(switchPiece);
+}
 
     // $(".row").appendTo("<div class='box'></div>");
     // // $(".box").attr("id", id);
@@ -120,7 +119,7 @@ function runGameBoard(array) {
   var  singleGamePieceArray = createSingleGamePieceArray(array);
   addGamePiecesToHtml(singleGamePieceArray);
   // CREATE SWITCH PIECE
-  // createSwitchPiece();
+  createSwitchPiece();
 }
 
 runGameBoard(gameArray);
