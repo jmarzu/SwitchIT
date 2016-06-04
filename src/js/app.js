@@ -5,8 +5,7 @@ $(document).ready(function () {
   }, function () {
     $(this).css("text-decoration", "none");
   });
-
-
+//
 // GLOBAL VARIABLES
 var monstersArray = [
   {
@@ -28,6 +27,7 @@ var levelsArray = [3, 4, 5];
 var currentLevel = 0;
 // CREATE GAME PIECES BY LEVEL
 var gameArray = createGameArray();
+console.log(gameArray);
 //
 // CREATE GAME PIECES BY LEVEL
 // F:createGameArray: create 2D array with random monsters using F:createRow
@@ -99,17 +99,7 @@ function createSwitchPiece() {
   var switchPiece = monstersArray[localMonsterIdx].symbol;
   $("#switch-piece").html(switchPiece);
 }
-
-    // $(".row").appendTo("<div class='box'></div>");
-    // // $(".box").attr("id", id);
-    // $(".box").html(array[i]);
-    // console.log("boxArray.length: ", array.length);
-    // console.log("boxArray: ", array);
-
-//  Add box IDs 1 thru totalboxes
-//  Add css styles for each monster
-//  Add css styles for boxes
-
+//
 // RUN GAMEBOARD
 function runGameBoard(array) {
   // CREATE BLANK GAME BOARD
@@ -121,7 +111,21 @@ function runGameBoard(array) {
   // CREATE SWITCH PIECE
   createSwitchPiece();
 }
-
+// CALL RUN GAME BOARD
 runGameBoard(gameArray);
+//
+// EVENT LISTENERS
+// event listener for each board piece
+$(".box").click(function (e) {
+  e.preventDefault();
+  alert('clicked');
+
+
+});
+// on click, switch box in gameArray & switchPiece
+// on click, switch html of switchPiece with html of gameArray
+
+
+
 
 }); // End Ready
