@@ -93,6 +93,13 @@ function addGamePiecesToHtml(array) {
     $(e).html(array[idx]);
   });
 }
+//
+// CREATE SWITCH PIECE
+// function createSwitchPiece() {
+//   var monsterIndex: createRandomM();
+//   var switchPiece = monstersArray[monsterIndex].symbol;
+//   $("#switch-piece").html(switchPiece);
+// }
 
     // $(".row").appendTo("<div class='box'></div>");
     // // $(".box").attr("id", id);
@@ -111,8 +118,9 @@ function runGameBoard(array) {
   createDivBoxes(array);
   // COMBINE GAME BOARD + GAME PIECES
   var  singleGamePieceArray = createSingleGamePieceArray(array);
-  // console.log("sArray: ", singleGamePieceArray);
   addGamePiecesToHtml(singleGamePieceArray);
+  // CREATE SWITCH PIECE
+  // createSwitchPiece();
 }
 
 runGameBoard(gameArray);
