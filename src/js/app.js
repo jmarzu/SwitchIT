@@ -60,4 +60,20 @@ function createRandomM() {
 var gameArray = createGameArray();
 console.log("gameArray: ", gameArray);
 
+// CREATE GAME BOARD
+// F:createDivRows: HTML number of rows = current level
+//  Add css styles for rows
+function createDivRows(array) {
+  array.forEach(function(e) {
+    $('#board').html("<div id='row'></div>")
+    // add class
+  });
+
+
+}
+// F:createDivBoxes: HTML boxes per row = current level
+//  Add box IDs 1 thru totalboxes
+//  Add css styles for each monster
+//  Add css styles for boxes
+
 }); // End Ready
