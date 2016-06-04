@@ -28,7 +28,7 @@ var levelsArray = [3, 4, 5];
 var currentLevel = 0;
 var gameArray = createGameArray();
 
-// CREATE GAME LEVEL
+// CREATE GAME LEVEL - 3 FUNCTIONS
 // F:createGameArray: create 2D array with random monsters using F:createRow
 function createGameArray () {
   var localArray = [];
@@ -50,10 +50,11 @@ function createRow() {
   }
   return localArray;
 }
+// CREATE RANDOM MONSTER
 // F:createRandomM: create 1 of 3 random monsters
 function createRandomM() {
-  // inputs? obj props?
-  // Random number logic
+// inputs? obj props?
+// Random number logic
   return Math.floor(Math.random() * numberOfMonsters);
 }
 
@@ -65,21 +66,26 @@ function createRandomM() {
 // F:createDivRows: HTML number of rows = current level
 //  Add css styles for rows
 function createDivRows(array) {
-  array.forEach(function(e) {
-    console.log("e:", e);
+  $(array).each(function() {
     $("#board").append("<div class='row'></div>");
   });
+  // array.forEach(function(e) {
+  //   console.log("e:", e);
+  //   $("#board").append("<div class='row'></div>");
+  // });
 }
-
-
-
 // F:createDivBoxes: HTML boxes per row = current level
 function createDivBoxes(array) {
   localArray = array[0];
-  localArray.forEach(function() {
+  $(localArray).each(function() {
     $(".row").append("<div class='box'></div>");
   });
 }
+
+// function addGameBoardToHTML (array) {
+//   localId = 1;
+//   array.forEach
+// }
     // $(".row").appendTo("<div class='box'></div>");
     // // $(".box").attr("id", id);
     // $(".box").html(array[i]);
