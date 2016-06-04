@@ -7,7 +7,7 @@ $(document).ready(function () {
   });
 
 
-// VARIABLES
+// GLOBAL VARIABLES
 var monstersArray = [
   {
     "symbol": "S",
@@ -29,6 +29,14 @@ var currentLevel = 0;
 
 // CREATE GAME LEVEL
 // F:createGameArray: create 2D array with random monsters using F:createRow
+function createGameArray () {
+  var localArray = [];
+  for (var i = 0; i < levelsArray[currentLevel]; i++) {
+  var rowArray = createRow();
+  localArray.push(rowArray);
+  }
+  return localArray;
+}
 // F:createRow: create array of rows with random monsters
 function createRow() {
   var localArray = [];
@@ -49,9 +57,7 @@ function createRandomM() {
 }
 
 // Process Outline
-
-
-var rowArray = createRow();
-console.log("rowArray: ", rowArray);
+var gameArray = createGameArray();
+console.log("gameArray: ", gameArray);
 
 }); // End Ready
