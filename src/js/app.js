@@ -83,14 +83,11 @@ function createSingleGamePieceArray(array) {
   localArray = $(array).map(function(e) {
     return array[e].symbol;
   });
-  console.log("localArray: ", localArray);
   return localArray;
 }
 // F:addGamePiecesToHtml
 function addGamePiecesToHtml(array) {
   $(".box").each(function(idx, e) {
-  console.log("array: ", array[idx]);
-  console.log("e: ", e);
   $(e).html(array[idx]);
   });
 }
@@ -98,7 +95,7 @@ function addGamePiecesToHtml(array) {
 // CREATE SWITCH PIECE
 function createSwitchPiece() {
   var localMonsterIdx = createRandomMonster();
-  var switchPiece = monstersObjArray[localMonsterIdx];
+  var switchPiece = monstersObjArray[localMonsterIdx].symbol;
   $("#switch-piece").html(switchPiece);
   return switchPiece;
 }
@@ -116,6 +113,7 @@ function runGame (array) {
 }
 //
 runGame(gameArray);
+//
 // function createGameArray () {
 //   var localArray = [];
 //   for (var i = 0; i < levelsArray[currentLevel]; i++) {
