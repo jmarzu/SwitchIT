@@ -10,18 +10,15 @@ $(document).ready(function () {
 var monstersObjArray = [
   {
     "symbol": "S",
-    "cssClass": "circle",
-    "currentIndex": ""
+    "cssClass": "circle"
   },
   {
     "symbol": "X",
-    "cssClass": "square",
-    "currentIndex": ""
+    "cssClass": "square"
   },
   {
     "symbol": "W",
-    "cssClass": "triangle",
-    "currentIndex": ""
+    "cssClass": "triangle"
   }
 ];
 var numberOfMonsters = monstersObjArray.length;
@@ -39,10 +36,12 @@ var singleGamePieceArray = [];
 
 function setUpBoard() {
   // create swap piece
-  // create temp array
-  var localArray = [];
+  // create temp array for final 2d gameArray
+  var localArray1 = [];
   // each row
   for (var i = 0; i < levelsArray[currentLevel]; i++) {
+    // create temp array for internal 1d array that we attached to final
+    var localArray2 = [];
     // create row and push to DOM
     $("#board").append("<div class='rows' id='row" + i + "'></div>");
     for (var k = 0; k < levelsArray[currentLevel]; k++) {
@@ -53,12 +52,13 @@ function setUpBoard() {
       // create random monster index
       var localMonsterIdx = createRandomMonster();
       // create random monster
-      var kLocalObj = monstersObjArray[localMonsterIdx];
+      var kLocalObj = JSON.parse(JSON.stringify(monstersObjArray[localMonsterIdx]));
       // set monster property currentIndex to idx[i]k[]
       kLocalObj.currentIndex = $("#idx" + i + k + "").attr("id");
       // add monster to gameArray (we are at position i, k)
-      localArray.push(kLocalObj);
-      console.log("kLocalObj: ", kLocalObj);
+      localArray2.push(kLocalObj);
+      console.log("kLocalObj: ", JSON.stringify(kLocalObj));
+      console.log("kIndex: ", kLocalObj.currentIndex);
       // add click listeners - create fct parameters i, k
       // $(".box").click(function() {
         // on click, switch box in gameArray & switchPiece
@@ -71,30 +71,60 @@ function setUpBoard() {
       // $(kLocalObj)
       // Assign monster symbols to gameboard
       $("#idx" + i + k + "").html(kLocalObj.symbol);
+  console.log("localArray2: ", JSON.stringify(localArray2));
     }
+  console.log("localArray2: ", JSON.stringify(localArray2));
+  localArray1.push(localArray2);
   }
-  return localArray;
+  return localArray1;
 }
 //
 //
 function switchPiece(row, col) {
-  var tempPiece = gameArray[row][col];
-  gameArray[row][col] = currentSwitchPiece;
-  currentSwitchPiece = tempPiece;
-  console.log("ck gArray: ", gameArray);
+  // create temp vals to modify before switch
+  var tempGamePiece = gameArray[row][col];
+  var tempSwitchPiece = currentSwitchPiece;
+  console.log("tempGP: ", JSON.stringify(tempGamePiece));
+  console.log("tempSP: ", tempSwitchPiece);
+  // set tempGamePiece to switch currentSwitchPiece
+  currentSwitchPiece = tempGamePiece;
+  console.log("New curSwP: ", currentSwitchPiece);
+  // update currentIndex to switch-piece
+  currentSwitchPiece.currentIndex = "switch-piece";
+  // update HTML div display
+  $("#switch-piece").html(tempGamePiece.symbol);
+
+//   // // move tempSwitchPiece to game array
+//   //   // update currentIndex to game index
+//   //   // update HTML div display
+//   // gameArray[row][col] = tempSwitchPiece;
+//   // tempSwitchPiece.currentIndex = "idx" +
+//   // console.log("tempGP: ", tempGamePiece);
+//   // console.log("tempSP: ", tempSwitchPiece);
+//   // $("#idx" + row + col + "").html(tempSwitchPiece.symbol);
+
+
+//   // console.log("curSwP: ", currentSwitchPiece);
+//   // gameArray[row][col] = currentSwitchPiece;
+//   // console.log("newGamePiece: ". )
+//   // currentSwitchPiece = tempGamePiece;
+//   // $("#switch-piece").html(tempGamePiece.symbol);
+//   // tempGamePiece.currentIndex = "switch-piece";
+//   // console.log("curSwP/T: ", currentSwitchPiece);
+//   // console.log("ck gArray: ", gameArray);
 }
 //
 // EVENT LISTENERS
 // add click listeners - create fct parameters i, k
 $(".box").click(function(e) {
-  // on click, switch box in gameArray & switchPiece
+  // on click, switch gameArray box obj & switchPiece
   var indexString = $(this).attr("id");
-  console.log("this: ", this);
-  console.log("indexString: ", indexString);
+  // console.log("this: ", this);
+  // console.log("indexString: ", indexString);
   var x = indexString.charAt(3);
   var y = indexString.charAt(4);
-  console.log(x, " ", y);
-  switchPiece(x, y);
+  // console.log(x, " ", y);
+  // switchPiece(x, y);
   // check for winning combo (also do before game starts)
 });
 //
@@ -120,9 +150,10 @@ function createRandomMonster() {
 //
 // CREATE SWITCH PIECE
 function createSwitchPiece() {
-  var localMonsterIdx = createRandomMonster();
-  var switchPiece = monstersObjArray[localMonsterIdx].symbol;
-  $("#switch-piece").html(switchPiece);
+  var localSwitchIdx = createRandomMonster();
+  var switchPiece = monstersObjArray[localSwitchIdx];
+  switchPiece.currentIndex = "switch-piece";
+  $("#switch-piece").html(switchPiece.symbol);
   return switchPiece;
 }
 //
@@ -132,7 +163,7 @@ console.log("SwitchP: ", currentSwitchPiece);
 //
 // RUN GAME
 function runGame (array) {
-  createSwitchPiece();
+  // createSwitchPiece();
 
 }
 //
