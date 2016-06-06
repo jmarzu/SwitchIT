@@ -49,16 +49,16 @@ function setUpBoard() {
       var kLocalObj = monstersObjArray[localMonsterIdx];
       localArray.push(monstersObjArray[localMonsterIdx]);
       console.log("kLocalObj: ", kLocalObj);
-      // create box and push to row
+      // create box and assign id = array location[i][k]
       var box = $("<div class='box' id='" + i + k + "'></div>");
-      console.log("box: ", box);
       // add click listeners - create fct parameters i, k
       // $(".box").click(function () {
       //   swapPiece(i, k);
       // });
+      // push columns to html
       $("#row" + i).append(box);
-      // localArray still undefined at this time
-      $("#box" + i + k).html("S");
+      // Assign monster symbols to gameboard
+      $("#" + i + k + "").html(kLocalObj.symbol);
     }
   }
   return localArray;
@@ -77,21 +77,6 @@ function createRandomMonster() {
   return Math.floor(Math.random() * numberOfMonsters);
 }
 //
-// ASSIGN MONSTER SYMBOLS TO GAMEBOARD
-// F:createSingleGamePieceArray
-function createSingleGamePieceArray(array) {
-  localArray = $(array).map(function(e) {
-    return array[e].symbol;
-  });
-  return localArray;
-}
-// F:addGamePiecesToHtml
-function addGamePiecesToHtml(array) {
-  $(".box").each(function(idx, e) {
-  $(e).html(array[idx]);
-  });
-}
-//
 // CREATE SWITCH PIECE
 function createSwitchPiece() {
   var localMonsterIdx = createRandomMonster();
@@ -107,9 +92,7 @@ console.log("SwitchP: ", currentSwitchPiece);
 // RUN GAME
 function runGame (array) {
   createSwitchPiece();
-  // ASSIGN MONSTER SYMBOLS TO GAMEBOARD
-  singleGamePieceArray = createSingleGamePieceArray(array);
-  addGamePiecesToHtml(singleGamePieceArray);
+
 }
 //
 runGame(gameArray);
@@ -154,7 +137,21 @@ runGame(gameArray);
 //     $(".rows").append("<li class='box' onclick='alert(\"\")'></li>");
 //   });
 // }
-// // //
+// //
+// // ASSIGN MONSTER SYMBOLS TO GAMEBOARD
+// F:createSingleGamePieceArray
+// function createSingleGamePieceArray(array) {
+//   localArray = $(array).map(function(e) {
+//     return array[e].symbol;
+//   });
+//   return localArray;
+// }
+// // F:addGamePiecesToHtml
+// function addGamePiecesToHtml(array) {
+//   $(".box").each(function(idx, e) {
+//   $(e).html(array[idx]);
+//   });
+// }
 // // $("ul ").attr("id", "0");
 // // // ASSIGN X,Y CLASSES TO BOARD
 // // // function assignXyLocation(array) {
