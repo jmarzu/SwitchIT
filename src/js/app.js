@@ -10,20 +10,36 @@ $(document).ready(function () {
 // reference array for monster objects
 var monstersObjArray = [
   {
-    "symbol": "S",
-    "cssClass": "circle"
+    symbol: "S",
+    cssClass: "blue"
   },
   {
-    "symbol": "X",
-    "cssClass": "square"
+    symbol: "X",
+    cssClass: "green"
   },
   {
-    "symbol": "W",
-    "cssClass": "triangle"
+    symbol: "W",
+    cssClass: "gray"
+  },
+  {
+    symbol: "H",
+    cssClass: "yellow"
   }
 ];
+// reference array for level properties
+var levelObjArray = [
+  {
+    level: 1,
+    boxNumber: 3,
+    maxMoves: 10,
+    scoreGoal: 1200,
+    pointsVal: 100,
+    danger: null
+  }
+];
+//
 var numberOfMonsters = monstersObjArray.length;
-var levelsArray = [3, 4, 5];
+var levelsArray = [3, 4, 5]; // might refactor to use levelObjArray
 var currentLevel = 0;
 //
 // CREATE & STORE gameArray GLOBALLY
@@ -34,7 +50,23 @@ var currentSwitchPiece = createSwitchPiece();
 //
 // **FUNCTIONS**
 //
-// DYNAMICALLY GAMEBOARD WITH RANDOM MONSTER PIECES ASSIGNED
+// CREATE RANDOM MONSTER
+// F:createRandomMonster: create 1 of 3 random monsters
+function createRandomMonster() {
+// Random number logic
+  return Math.floor(Math.random() * numberOfMonsters);
+}
+//
+// CREATE SWITCH PIECE
+function createSwitchPiece() {
+  var localSwitchIdx = createRandomMonster();
+  var switchPiece = monstersObjArray[localSwitchIdx];
+  switchPiece.currentIndex = "switch-piece";
+  $("#switch-piece").html(switchPiece.symbol);
+  return switchPiece;
+}
+//
+// DYNAMIC GAMEBOARD WITH RANDOM MONSTER PIECES ASSIGNED
 function setUpBoard() {
   // create swap piece
   // create temp array for final 2d gameArray
@@ -89,20 +121,56 @@ function switchPiece(row, col) {
   $("#idx" + row + col + "").html(gameArray[row][col].symbol);
 }
 //
-// CREATE RANDOM MONSTER
-// F:createRandomMonster: create 1 of 3 random monsters
-function createRandomMonster() {
-// Random number logic
-  return Math.floor(Math.random() * numberOfMonsters);
-}
+// GAME LOGIC
+// create score var at 0 and div
 //
-// CREATE SWITCH PIECE
-function createSwitchPiece() {
-  var localSwitchIdx = createRandomMonster();
-  var switchPiece = monstersObjArray[localSwitchIdx];
-  switchPiece.currentIndex = "switch-piece";
-  $("#switch-piece").html(switchPiece.symbol);
-  return switchPiece;
+// POINTS LOGIC
+function getPoints () {
+  // set max moves at 10 and div
+  var maxMoves = levelObjArray[currentLevel].maxMoves;
+  // set score goal
+  var scoreGoal = levelObjArray[currentLevel].scoreGoal;
+  // set points value
+  var pointsVal = levelObjArray[currentLevel].pointsVal;
+  // establish box max width/height
+  var maxSize = levelObjArray[currentLevel].boxNumber;
+  console.log("Move:", maxMoves,
+    "Goal:", scoreGoal,
+    "pointsVal:", pointsVal,
+    "maxSize:", maxSize);
+  // establish horizontal and vertical counter at 0
+  var rowCounter = 0;
+  var colCounter = 0;
+  // if max moves
+  if (maxMoves > 0) {
+    console.log("I got Moves", maxMoves);
+    // set variable to compare
+    // for loop that continues until entire row is equal
+    for (var i = 0; i < maxSize; i++) {
+      var keyRowPiece = gameArray[i][0].symbol;
+      console.log("keyRowPiece:", keyRowPiece);
+      // console.log("In loop i");
+      for (var k = 0; k < maxSize; k++) {
+        console.log("In loop k:", "i:", i, "k:", k);
+        // compare each box in row (reference currentLevel) to next
+        // var keyColPiece = gameArray[i][k].symbol;
+        // console.log("keyColPiece:", keyColPiece);
+        if (keyRowPiece === gameArray[i][k].symbol) {
+          var rowMatch = true;
+          console.log("Match", rowMatch);
+        } else {
+          rowMatch = false;
+          console.log("Match", rowMatch);
+        }
+        // if (gameArray[i][k] === gameArray[i++][])
+      }
+      if (rowMatch) {
+        console.log("Got a matched row");
+      }
+    // compare each box in a column (reference curentLevel)
+    }
+  // if 3 of a kind in either direction, add points to score
+  }
 }
 //
 // EVENT LISTENERS
@@ -116,6 +184,7 @@ $(".box").click(function(e) {
   var y = indexString.charAt(4);
   // console.log(x, " ", y);
   switchPiece(x, y);
+  getPoints();
   // check for winning combo (also do before game starts)
 });
 //
