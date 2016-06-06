@@ -10,15 +10,18 @@ $(document).ready(function () {
 var monstersObjArray = [
   {
     "symbol": "S",
-    "cssClass": "circle"
+    "cssClass": "circle",
+    "currentIndex": ""
   },
   {
     "symbol": "X",
-    "cssClass": "square"
+    "cssClass": "square",
+    "currentIndex": ""
   },
   {
     "symbol": "W",
-    "cssClass": "triangle"
+    "cssClass": "triangle",
+    "currentIndex": ""
   }
 ];
 var numberOfMonsters = monstersObjArray.length;
@@ -43,32 +46,70 @@ function setUpBoard() {
     // create row and push to DOM
     $("#board").append("<div class='rows' id='row" + i + "'></div>");
     for (var k = 0; k < levelsArray[currentLevel]; k++) {
-      // create random monster
-      var localMonsterIdx = createRandomMonster();
-      // add monster to gameArray at position i, k
-      var kLocalObj = monstersObjArray[localMonsterIdx];
-      localArray.push(monstersObjArray[localMonsterIdx]);
-      console.log("kLocalObj: ", kLocalObj);
       // create box and assign id = array location[i][k]
-      var box = $("<div class='box' id='" + i + k + "'></div>");
+      var box = $("<div class='box' id='idx" + i + k + "'></div>");
+      // push columns to html
+      $("#row" + i).append(box);
+      // create random monster index
+      var localMonsterIdx = createRandomMonster();
+      // create random monster
+      var kLocalObj = monstersObjArray[localMonsterIdx];
+      // set monster property currentIndex to idx[i]k[]
+      kLocalObj.currentIndex = $("#idx" + i + k + "").attr("id");
+      // add monster to gameArray (we are at position i, k)
+      localArray.push(kLocalObj);
+      console.log("kLocalObj: ", kLocalObj);
       // add click listeners - create fct parameters i, k
+      // $(".box").click(function() {
+        // on click, switch box in gameArray & switchPiece
+        // switchPiece(i, k);
+        // check for winning combo (also do before game starts)
+      // });
       // $(".box").click(function () {
       //   swapPiece(i, k);
       // });
-      // push columns to html
-      $("#row" + i).append(box);
+      // $(kLocalObj)
       // Assign monster symbols to gameboard
-      $("#" + i + k + "").html(kLocalObj.symbol);
+      $("#idx" + i + k + "").html(kLocalObj.symbol);
     }
   }
   return localArray;
 }
-
-// function switchPiece(row, col) {
-//   var tempPiece = gameArray[row][col];
-//   gameArray[row][col] = swapPiece;()
-//   swapPiece = tempPiece;
-// }
+//
+//
+function switchPiece(row, col) {
+  var tempPiece = gameArray[row][col];
+  gameArray[row][col] = currentSwitchPiece;
+  currentSwitchPiece = tempPiece;
+  console.log("ck gArray: ", gameArray);
+}
+//
+// EVENT LISTENERS
+// add click listeners - create fct parameters i, k
+$(".box").click(function(e) {
+  // on click, switch box in gameArray & switchPiece
+  var indexString = $(this).attr("id");
+  console.log("this: ", this);
+  console.log("indexString: ", indexString);
+  var x = indexString.charAt(3);
+  var y = indexString.charAt(4);
+  console.log(x, " ", y);
+  switchPiece(x, y);
+  // check for winning combo (also do before game starts)
+});
+//
+// $(".box").click(function (e) {
+//   e.preventDefault();
+//   // on click, switch html of switchPiece with html of gameArray
+//   var localStoreHtml = $(this).html();
+//   var localStoreBoardLocation = gameArray.indexOf(this);
+//   console.log(localStoreHtml);
+//   console.log(localStoreBoardLocation);
+//   $(this).html(currentSwitchPiece);
+//
+//   currentSwitchPiece = localStoreHtml;
+//   $("#switch-piece").html(currentSwitchPiece);
+// });
 //
 // CREATE RANDOM MONSTER
 // F:createRandomMonster: create 1 of 3 random monsters
