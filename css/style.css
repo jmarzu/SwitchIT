@@ -1,10 +1,10 @@
 h1 {
   color: rebeccapurple;
   }
-.row {
+.rows {
   float: left;
   width: 100%;
-  margin-left: 20px;
+  margin: 0 20px;
 }
 
 .box {
@@ -15,6 +15,7 @@ h1 {
   font-size: 75px;
   text-align: center;
   line-height: 100px;
+  list-style: none;
 }
 .game-board {
   /*position: relative;*/
