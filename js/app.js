@@ -41,12 +41,14 @@ function setUpBoard() {
   // each row
   for (var i = 0; i < levelsArray[currentLevel]; i++) {
     // create row and push to DOM
-    $("#board").append("<div class='row' id='row" + i + "'></div>");
+    $("#board").append("<div class='rows' id='row" + i + "'></div>");
     for (var k = 0; k < levelsArray[currentLevel]; k++) {
       // create random monster
       var localMonsterIdx = createRandomMonster();
       // add monster to gameArray at position i, k
+      var kLocalObj = monstersObjArray[localMonsterIdx];
       localArray.push(monstersObjArray[localMonsterIdx]);
+      console.log("kLocalObj: ", kLocalObj);
       // create box and push to row
       var box = $("<div class='box' id='" + i + k + "'></div>");
       console.log("box: ", box);
@@ -54,13 +56,15 @@ function setUpBoard() {
       // $(".box").click(function () {
       //   swapPiece(i, k);
       // });
+      $("#row" + i).append(box);
+      // localArray still undefined at this time
+      $("#box" + i + k).html("S");
     }
-    $("#row" + i).append(box);
   }
   return localArray;
 }
 
-// function swapPiece(row, col) {
+// function switchPiece(row, col) {
 //   var tempPiece = gameArray[row][col];
 //   gameArray[row][col] = swapPiece;()
 //   swapPiece = tempPiece;
@@ -72,6 +76,25 @@ function createRandomMonster() {
 // Random number logic
   return Math.floor(Math.random() * numberOfMonsters);
 }
+//
+// ASSIGN MONSTER SYMBOLS TO GAMEBOARD
+// F:createSingleGamePieceArray
+function createSingleGamePieceArray(array) {
+  localArray = $(array).map(function(e) {
+    return array[e].symbol;
+  });
+  console.log("localArray: ", localArray);
+  return localArray;
+}
+// F:addGamePiecesToHtml
+function addGamePiecesToHtml(array) {
+  $(".box").each(function(idx, e) {
+  console.log("array: ", array[idx]);
+  console.log("e: ", e);
+  $(e).html(array[idx]);
+  });
+}
+//
 // CREATE SWITCH PIECE
 function createSwitchPiece() {
   var localMonsterIdx = createRandomMonster();
@@ -85,10 +108,14 @@ var currentSwitchPiece = createSwitchPiece();
 console.log("SwitchP: ", currentSwitchPiece);
 //
 // RUN GAME
-function runGame () {
+function runGame (array) {
   createSwitchPiece();
+  // ASSIGN MONSTER SYMBOLS TO GAMEBOARD
+  singleGamePieceArray = createSingleGamePieceArray(array);
+  addGamePiecesToHtml(singleGamePieceArray);
 }
-
+//
+runGame(gameArray);
 // function createGameArray () {
 //   var localArray = [];
 //   for (var i = 0; i < levelsArray[currentLevel]; i++) {
@@ -129,25 +156,6 @@ function runGame () {
 //     $(".rows").append("<li class='box' onclick='alert(\"\")'></li>");
 //   });
 // }
-// //
-// // COMBINE GAME BOARD + GAME PIECES
-// // F:createSingleGamePieceArray
-// function createSingleGamePieceArray(array) {
-//   localArray = [];
-//   $(array).each(function(idx, element) {
-//     // // console.log("idx: ", idx);
-//     $.merge(localArray, element);
-//   });
-//   // console.log("localArray: ", localArray);
-//   return localArray;
-// }
-// // // F:addGamePiecesToHtml
-// // function addGamePiecesToHtml(array) {
-// //   $(".box").each(function(idx, e) {
-
-// //     $(e).html(array[idx]);
-// //   });
-// // }
 // // //
 // // $("ul ").attr("id", "0");
 // // // ASSIGN X,Y CLASSES TO BOARD
