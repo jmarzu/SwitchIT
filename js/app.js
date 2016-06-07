@@ -157,69 +157,69 @@ function getPoints () {
     "pointsVal:", pointsVal,
     "maxSize:", maxSize);
   // if max moves
-  if (maxMoves > 0) {
-    console.log("I got Moves", maxMoves);
-    // set variable to compare
-    // for loop that continues until entire row is equal
-    for (var i = 0; i < maxSize; i++) {
-      var keyRowPiece = gameArray[i][0].symbol;
-      // winning until proven not winning
-      var rowMatch = true;
-      var checkRow = [];
-      // console.log("keyRowPiece:", keyRowPiece);
-      // console.log("In loop i");
-      for (var k = 0; k < maxSize; k++) {
-        // console.log("In loop k:", "i:", i, "k:", k);
-        // console.log("gameArray:", JSON.stringify(gameArray));
-        // compare each box in row (reference currentLevel) to next
-        var idx = "idx" + i + k;
-        checkRow.push(idx);
-        console.log("cRow1:", checkRow);
-        // console.log("keyColPiece:", keyColPiece);
-        if (keyRowPiece !== gameArray[i][k].symbol) {
-          rowMatch = false;
-          console.log("Match", rowMatch);
-          console.log("checkRow:", checkRow);
-          break;
-        }
-      }
-      if (rowMatch) {
-        for (var z = 0; z < maxSize; z++) {
-          var x = checkRow[z].charAt(3);
-          var y = checkRow[z].charAt(4);
-          $("#idx" + x + y +"").addClass("score");
-        }
-        console.log("Got a matched row");
-      }
-    }
-  }
-  if (maxMoves > 0) {
-    for (var i = 0; i < maxSize; i++) {
-      var keyColPiece = gameArray[0][i].symbol;
-      var colMatch = true;
-      // console.log("keyColPiece:", keyColPiece);
-      var checkCol = [];
-      for (var k = 0; k < maxSize; k++) {
-        // console.log("In loop k:", "i:", i, "k:", k);
-        var idx = "idx" + k + i;
-        checkCol.push(idx);
-        if (keyColPiece !== gameArray[k][i].symbol) {
-          colMatch = false;
-          // console.log("colMatch:", colMatch);
-          break;
-        }
-      }
-      if (colMatch) {
-        for (var z = 0; z < maxSize; z++) {
-          var x = checkCol[z].charAt(3);
-          var y = checkCol[z].charAt(4);
-          $("#idx" + x + y +"").addClass("score");
-        }
-        console.log("Column Match");
-      }
-    }
-  }
 }
+//
+// CHECK FOR MATCHES - ROW & COL
+function checkForMatches() {
+  // establish box max width/height by level
+  var maxSize = levelObjArray[currentLevel].boxNumber;
+  // for loop that continues until entire row is equal
+  for (var i = 0; i < maxSize; i++) {
+    var keyRowPiece = gameArray[i][0].symbol;
+    // winning until proven not winning
+    var rowMatch = true;
+    var checkRow = [];
+    // console.log("keyRowPiece:", keyRowPiece);
+    // console.log("In loop i");
+    for (var k = 0; k < maxSize; k++) {
+      // console.log("In loop k:", "i:", i, "k:", k);
+      // console.log("gameArray:", JSON.stringify(gameArray));
+      // compare each box in row (reference currentLevel) to next
+      var idx = "idx" + i + k;
+      checkRow.push(idx);
+      console.log("cRow1:", checkRow);
+      // console.log("keyColPiece:", keyColPiece);
+      if (keyRowPiece !== gameArray[i][k].symbol) {
+        rowMatch = false;
+        console.log("Match", rowMatch);
+        console.log("checkRow:", checkRow);
+        break;
+      }
+    }
+    if (rowMatch) {
+      for (var z = 0; z < maxSize; z++) {
+        var x = checkRow[z].charAt(3);
+        var y = checkRow[z].charAt(4);
+        $("#idx" + x + y +"").addClass("score");
+      }
+      console.log("Got a matched row");
+    }
+  }
+  for (var i = 0; i < maxSize; i++) {
+    var keyColPiece = gameArray[0][i].symbol;
+    var colMatch = true;
+    // console.log("keyColPiece:", keyColPiece);
+    var checkCol = [];
+    for (var k = 0; k < maxSize; k++) {
+      // console.log("In loop k:", "i:", i, "k:", k);
+      var idx = "idx" + k + i;
+      checkCol.push(idx);
+      if (keyColPiece !== gameArray[k][i].symbol) {
+        colMatch = false;
+        // console.log("colMatch:", colMatch);
+        break;
+      }
+    }
+    if (colMatch) {
+      for (var z = 0; z < maxSize; z++) {
+        var x = checkCol[z].charAt(3);
+        var y = checkCol[z].charAt(4);
+        $("#idx" + x + y +"").addClass("score");
+      }
+      console.log("Column Match");
+    }
+  }
+} // END checkForMatches
 //
 // EVENT LISTENERS
 // !! add function to make event listeners not work if board is not playable
@@ -233,7 +233,7 @@ $(".box").click(function(e) {
   var y = indexString.charAt(4);
   // console.log(x, " ", y);
   switchPiece(x, y);
-  getPoints();
+  checkForMatches();
   // check for winning combo (also do before game starts)
 });
 //
