@@ -60,9 +60,9 @@ function createRandomMonster() {
 // CREATE SWITCH PIECE
 function createSwitchPiece() {
   var localSwitchIdx = createRandomMonster();
-  var switchPiece = monstersObjArray[localSwitchIdx];
-  switchPiece.currentIndex = "switch-piece";
-  $("#switch-piece").html(switchPiece.symbol);
+  var switchPiece = JSON.parse(JSON.stringify(monstersObjArray[localSwitchIdx]));
+  // switchPiece.currentIndex = "switch-piece";
+  $("#switch-piece").text(switchPiece.symbol);
   return switchPiece;
 }
 //
@@ -107,18 +107,18 @@ function switchPiece(row, col) {
   // create temperary reference to currentSwitchPiece
   // var tempGamePiece = gameArray[row][col];
   var tempSwitchPiece = currentSwitchPiece;
-  console.log("tempGP: ", JSON.stringify(tempSwitchPiece));
+  // console.log("tempGP: ", JSON.stringify(tempSwitchPiece));
   // console.log("tempSP: ", tempSwitchPiece);
   // set currentSwitchPiece to gameboard obj data
   currentSwitchPiece = gameArray[row][col];
-  console.log("New curSwP: ", JSON.stringify(currentSwitchPiece));
+  // console.log("New curSwP: ", JSON.stringify(currentSwitchPiece));
   // update HTML UI to show new symbol
-  $("#switch-piece").html(currentSwitchPiece.symbol);
+  $("#switch-piece").text(currentSwitchPiece.symbol);
   // set gameboard obj to tempSwitchPiece data
   gameArray[row][col] = tempSwitchPiece;
-  console.log("New gameP: ", JSON.stringify(gameArray[row][col]));
-  // update HTML UI to show new symbol
-  $("#idx" + row + col + "").html(gameArray[row][col].symbol);
+  // console.log("New gameP: ", JSON.stringify(gameArray[row][col]));
+  // update text UI to show new symbol
+  $("#idx" + row + col + "").text(gameArray[row][col].symbol);
 }
 //
 // GAME LOGIC
@@ -148,28 +148,50 @@ function getPoints () {
     // for loop that continues until entire row is equal
     for (var i = 0; i < maxSize; i++) {
       var keyRowPiece = gameArray[i][0].symbol;
-      console.log("keyRowPiece:", keyRowPiece);
+      // winning until proven not winning
+      var rowMatch = true;
+      var checkArray1 = [];
+      var checkArray2 = [];
+      var checkArray3 = [];
+      // console.log("keyRowPiece:", keyRowPiece);
       // console.log("In loop i");
       for (var k = 0; k < maxSize; k++) {
-        console.log("In loop k:", "i:", i, "k:", k);
+        // console.log("In loop k:", "i:", i, "k:", k);
         // compare each box in row (reference currentLevel) to next
-        // var keyColPiece = gameArray[i][k].symbol;
+        // checkArray1.push(gameArray[i][k].attr("id"));
         // console.log("keyColPiece:", keyColPiece);
-        if (keyRowPiece === gameArray[i][k].symbol) {
-          var rowMatch = true;
-          console.log("Match", rowMatch);
-        } else {
+        if (keyRowPiece !== gameArray[i][k].symbol) {
           rowMatch = false;
-          console.log("Match", rowMatch);
+          // console.log("Match", rowMatch);
+          break;
         }
-        // if (gameArray[i][k] === gameArray[i++][])
       }
       if (rowMatch) {
+        // for (var z = 0; z <checkArray1.length; z++) {
+        //   var idWin = checkArray1[i];
+        //   $("#idWin").addClass("score");
+        // }
         console.log("Got a matched row");
       }
-    // compare each box in a column (reference curentLevel)
     }
-  // if 3 of a kind in either direction, add points to score
+  }
+  if (maxMoves > 0) {
+    for (var i = 0; i < maxSize; i++) {
+      var keyColPiece = gameArray[0][i].symbol;
+      var colMatch = true;
+      // console.log("keyColPiece:", keyColPiece);
+      for (var k = 0; k < maxSize; k++) {
+        // console.log("In loop k:", "i:", i, "k:", k);
+        if (keyColPiece !== gameArray[k][i].symbol) {
+          colMatch = false;
+          // console.log("colMatch:", colMatch);
+          break;
+        }
+      }
+      if (colMatch) {
+        console.log("Column Match");
+      }
+    }
   }
 }
 //
@@ -188,11 +210,5 @@ $(".box").click(function(e) {
   // check for winning combo (also do before game starts)
 });
 //
-// RUN GAME
-function runGame (array) {
-  createSwitchPiece();
-}
-//
-runGame(gameArray);
 //
 }); // End Ready
