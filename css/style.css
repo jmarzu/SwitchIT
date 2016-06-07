@@ -1,3 +1,6 @@
+body {
+    font-family: helvetica;
+}
 h1 {
   color: rebeccapurple;
   }
@@ -6,41 +9,66 @@ h1 {
   width: 100%;
   margin: 0 20px;
 }
-
+.backboard {
+  max-width: 500px;
+}
+.score-board {
+  display: inline-block;
+  float: right;
+  width: 150px;
+  text-align: center;
+}
+.move-board {
+  display: inline-block;
+  float: right;
+  width: 100px;
+  text-align: center;
+}
 .box {
   float: left;
   border: 1px solid purple;
-  height: 100px;
-  width: 100px;
-  font-size: 75px;
+  height: 75px;
+  width: 75px;
+  /*font-size: 75px;*/
   text-align: center;
-  line-height: 100px;
-  list-style: none;
-}
-.game-board {
-  /*position: relative;*/
-  text-align: center;
-
+  line-height: 75px;
 }
 .switch-card {
   /*position: absolute;*/
+  display: inline-block;
   margin-bottom: 20px;
   margin-left: 20px;
   text-align: right;
-  height: 120px;
-  width: 120px;
+  height: 100px;
+  width: 100px;
   border: 1px solid purple;
 }
 #switch-piece {
   border: 1px solid purple;
   margin: 10px 10px;
-  height: 100px;
-  width: 100px;
+  height: 75px;
+  width: 75px;
   text-align: center;
-  line-height: 100px;
-  font-size: 75px;
+  line-height: 75px;
+/*  font-size: 75px;*/
+}
+.game-board {
+  /*position: relative;*/
+  text-align: center;
 }
 .score {
   background-color: pink;
   color: white;
+}
+.yellow {
+  background-color: yellow;
+}
+.blue {
+  background-color: blue;
+}
+.green {
+  background-color: green;
+}
+.gray {
+  background-color: gray;
 }
