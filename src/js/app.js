@@ -6,7 +6,7 @@ $(document).ready(function () {
     $(this).css("text-decoration", "none");
   });
 //
-// **GLOBAL VARIABLES**
+//// **GLOBAL VARIABLES**
 // reference array for monster objects
 var monstersObjArray = [
   {
@@ -56,15 +56,27 @@ var levelObjArray = [
 //
 var numberOfMonsters = monstersObjArray.length;
 var levelsArray = [3, 4, 5]; // might refactor to use levelObjArray
-var currentLevel = 2;
+var currentLevel = 0;
 //
+// IF true, EVENT HANDLERS ON
+var gameOn = true;
 // CREATE & STORE gameArray GLOBALLY
 var gameArray = setUpBoard();
 //
 // CREATE & STORE currentSwitchPiece GLOBALLY
 var currentSwitchPiece = createSwitchPiece();
 //
-// **FUNCTIONS**
+// SET UP MAX MOVES
+var maxMoves = levelObjArray[currentLevel].maxMoves;
+$("#moves").text(maxMoves);
+// SET UP SCORE GOAL
+var scoreGoal = levelObjArray[currentLevel].scoreGoal;
+$("#goal").text(scoreGoal);
+// SET UP POINTS VALUE
+var pointsVal = levelObjArray[currentLevel].pointsVal;
+var score = 0;
+//
+//// **FUNCTIONS**
 //
 // CREATE RANDOM MONSTER
 // F:createRandomMonster: create 1 of 3 random monsters
@@ -78,7 +90,7 @@ function createSwitchPiece() {
   var localSwitchIdx = createRandomMonster();
   var switchPiece = JSON.parse(JSON.stringify(monstersObjArray[localSwitchIdx]));
   // switchPiece.currentIndex = "switch-piece";
-  $("#switch-piece").text(switchPiece.symbol);
+  $("#switch-piece").addClass(switchPiece.cssClass);
   return switchPiece;
 }
 //
@@ -109,7 +121,8 @@ function setUpBoard() {
       // console.log("kLocalObj: ", JSON.stringify(kLocalObj));
       // console.log("kIndex: ", kLocalObj.currentIndex);
       // assign monster symbols to gameboard
-      $("#idx" + i + k + "").html(kLocalObj.symbol);
+      // $("#idx" + i + k + "").html(kLocalObj.cssClass);
+      $("#idx" + i + k + "").addClass(kLocalObj.cssClass);
   // console.log("localArray2: ", JSON.stringify(localArray2));
     }
   // console.log("localArray2: ", JSON.stringify(localArray2));
@@ -128,28 +141,23 @@ function switchPiece(row, col) {
   // set currentSwitchPiece to gameboard obj data
   currentSwitchPiece = gameArray[row][col];
   // console.log("New curSwP: ", JSON.stringify(currentSwitchPiece));
-  // update HTML UI to show new symbol
-  $("#switch-piece").text(currentSwitchPiece.symbol);
+  // update HTML UI to show new cssClass
+  // $("#switch-piece").addClass(currentSwitchPiece.cssClass);
+  $("#switch-piece").switchClass(tempSwitchPiece.cssClass, currentSwitchPiece.cssClass);
   // set gameboard obj to tempSwitchPiece data
   gameArray[row][col] = tempSwitchPiece;
   // console.log("New gameP: ", JSON.stringify(gameArray[row][col]));
-  // update text UI to show new symbol
-  $("#idx" + row + col + "").text(gameArray[row][col].symbol);
+  // update addClass UI to show new cssClass
+  // $("#idx" + row + col + "").addClass(gameArray[row][col].cssClass);
+  $("#idx" + row + col + "").switchClass(currentSwitchPiece.cssClass, gameArray[row][col].cssClass);
 }
 //
 // GAME LOGIC
-// create score var at 0 and div
 //
 // POINTS LOGIC
 function getPoints () {
-  // set max moves at 10 and div
-  var maxMoves = levelObjArray[currentLevel].maxMoves;
-  // set score goal
-  var scoreGoal = levelObjArray[currentLevel].scoreGoal;
-  // set points value
-  var pointsVal = levelObjArray[currentLevel].pointsVal;
-  // establish box max width/height
-  var maxSize = levelObjArray[currentLevel].boxNumber;
+
+  // var maxSize = levelObjArray[currentLevel].boxNumber;
   //
   var currentScore = 0;
   console.log("Move:", maxMoves,
@@ -165,7 +173,7 @@ function checkForMatches() {
   var maxSize = levelObjArray[currentLevel].boxNumber;
   // for loop that continues until entire row is equal
   for (var i = 0; i < maxSize; i++) {
-    var keyRowPiece = gameArray[i][0].symbol;
+    var keyRowPiece = gameArray[i][0].cssClass;
     // winning until proven not winning
     var rowMatch = true;
     var checkRow = [];
@@ -179,7 +187,7 @@ function checkForMatches() {
       checkRow.push(idx);
       console.log("cRow1:", checkRow);
       // console.log("keyColPiece:", keyColPiece);
-      if (keyRowPiece !== gameArray[i][k].symbol) {
+      if (keyRowPiece !== gameArray[i][k].cssClass) {
         rowMatch = false;
         console.log("Match", rowMatch);
         console.log("checkRow:", checkRow);
@@ -187,16 +195,20 @@ function checkForMatches() {
       }
     }
     if (rowMatch) {
+      // turn off event listeners
+      // gameOn = false;
       for (var z = 0; z < maxSize; z++) {
         var x = checkRow[z].charAt(3);
         var y = checkRow[z].charAt(4);
-        $("#idx" + x + y +"").addClass("score");
+        // $("#idx" + x + y + "").addClass("score");
+        $("#idx" + x + y + "").switchClass(gameArray[x][y].cssClass, "score", 1000, "easeOutBounce");
       }
+
       console.log("Got a matched row");
     }
   }
   for (var i = 0; i < maxSize; i++) {
-    var keyColPiece = gameArray[0][i].symbol;
+    var keyColPiece = gameArray[0][i].cssClass;
     var colMatch = true;
     // console.log("keyColPiece:", keyColPiece);
     var checkCol = [];
@@ -204,18 +216,22 @@ function checkForMatches() {
       // console.log("In loop k:", "i:", i, "k:", k);
       var idx = "idx" + k + i;
       checkCol.push(idx);
-      if (keyColPiece !== gameArray[k][i].symbol) {
+      if (keyColPiece !== gameArray[k][i].cssClass) {
         colMatch = false;
         // console.log("colMatch:", colMatch);
         break;
       }
     }
     if (colMatch) {
+      // turn off event listeners
+      // gameOn = false;
       for (var z = 0; z < maxSize; z++) {
         var x = checkCol[z].charAt(3);
         var y = checkCol[z].charAt(4);
-        $("#idx" + x + y +"").addClass("score");
+        $("#idx" + x + y + "").switchClass(gameArray[x][y].cssClass, "score", 1000);
+        // $("#idx" + x + y + "").addClass("score");
       }
+      var score = score + (checkCol.length * pointsVal);
       console.log("Column Match");
     }
   }
@@ -224,18 +240,21 @@ function checkForMatches() {
 // EVENT LISTENERS
 // !! add function to make event listeners not work if board is not playable
 // add click listeners - create fct parameters i, k
-$(".box").click(function(e) {
-  // on click, switch gameArray box obj & switchPiece
-  var indexString = $(this).attr("id");
-  // console.log("this: ", this);
-  // console.log("indexString: ", indexString);
-  var x = indexString.charAt(3);
-  var y = indexString.charAt(4);
-  // console.log(x, " ", y);
-  switchPiece(x, y);
-  checkForMatches();
-  // check for winning combo (also do before game starts)
-});
+if (gameOn) {
+  $(".box").click(function(e) {
+    // on click, switch gameArray box obj & switchPiece
+    var indexString = $(this).attr("id");
+    console.log("this: ", this);
+    console.log("indexString: ", indexString);
+    var x = indexString.charAt(3);
+    var y = indexString.charAt(4);
+    console.log(x, " ", y);
+    switchPiece(x, y);
+    checkForMatches();
+    // check for winning combo (also do before game starts)
+  });
+}
 //
-//
+// RUN GAME
+gameboardSetup();
 }); // End Ready
