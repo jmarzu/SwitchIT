@@ -29,8 +29,24 @@ var monstersObjArray = [
 // reference array for level properties
 var levelObjArray = [
   {
-    level: 1,
+    level: 0,
     boxNumber: 3,
+    maxMoves: 10,
+    scoreGoal: 1200,
+    pointsVal: 100,
+    danger: null
+  },
+  {
+    level: 1,
+    boxNumber: 4,
+    maxMoves: 10,
+    scoreGoal: 1200,
+    pointsVal: 100,
+    danger: null
+  },
+  {
+    level: 2,
+    boxNumber: 5,
     maxMoves: 10,
     scoreGoal: 1200,
     pointsVal: 100,
@@ -40,7 +56,7 @@ var levelObjArray = [
 //
 var numberOfMonsters = monstersObjArray.length;
 var levelsArray = [3, 4, 5]; // might refactor to use levelObjArray
-var currentLevel = 0;
+var currentLevel = 2;
 //
 // CREATE & STORE gameArray GLOBALLY
 var gameArray = setUpBoard();
@@ -134,6 +150,8 @@ function getPoints () {
   var pointsVal = levelObjArray[currentLevel].pointsVal;
   // establish box max width/height
   var maxSize = levelObjArray[currentLevel].boxNumber;
+  //
+  var currentScore = 0;
   console.log("Move:", maxMoves,
     "Goal:", scoreGoal,
     "pointsVal:", pointsVal,
@@ -150,27 +168,30 @@ function getPoints () {
       var keyRowPiece = gameArray[i][0].symbol;
       // winning until proven not winning
       var rowMatch = true;
-      var checkArray1 = [];
-      var checkArray2 = [];
-      var checkArray3 = [];
+      var checkRow = [];
       // console.log("keyRowPiece:", keyRowPiece);
       // console.log("In loop i");
       for (var k = 0; k < maxSize; k++) {
         // console.log("In loop k:", "i:", i, "k:", k);
+        console.log("gameArray:", JSON.stringify(gameArray));
         // compare each box in row (reference currentLevel) to next
-        // checkArray1.push(gameArray[i][k].attr("id"));
+        var idx = "idx" + i + k;
+        checkRow.push(idx);
+        console.log("cRow1:", checkRow);
         // console.log("keyColPiece:", keyColPiece);
         if (keyRowPiece !== gameArray[i][k].symbol) {
           rowMatch = false;
-          // console.log("Match", rowMatch);
+          console.log("Match", rowMatch);
+          console.log("checkRow:", checkRow);
           break;
         }
       }
       if (rowMatch) {
-        // for (var z = 0; z <checkArray1.length; z++) {
-        //   var idWin = checkArray1[i];
-        //   $("#idWin").addClass("score");
-        // }
+        for (var z = 0; z < maxSize; z++) {
+          var x = checkRow[z].charAt(3);
+          var y = checkRow[z].charAt(4);
+          $("#idx" + x + y +"").addClass("score");
+        }
         console.log("Got a matched row");
       }
     }
