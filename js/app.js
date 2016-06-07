@@ -156,9 +156,6 @@ function getPoints () {
     "Goal:", scoreGoal,
     "pointsVal:", pointsVal,
     "maxSize:", maxSize);
-  // establish horizontal and vertical counter at 0
-  var rowCounter = 0;
-  var colCounter = 0;
   // if max moves
   if (maxMoves > 0) {
     console.log("I got Moves", maxMoves);
@@ -173,7 +170,7 @@ function getPoints () {
       // console.log("In loop i");
       for (var k = 0; k < maxSize; k++) {
         // console.log("In loop k:", "i:", i, "k:", k);
-        console.log("gameArray:", JSON.stringify(gameArray));
+        // console.log("gameArray:", JSON.stringify(gameArray));
         // compare each box in row (reference currentLevel) to next
         var idx = "idx" + i + k;
         checkRow.push(idx);
@@ -201,8 +198,11 @@ function getPoints () {
       var keyColPiece = gameArray[0][i].symbol;
       var colMatch = true;
       // console.log("keyColPiece:", keyColPiece);
+      var checkCol = [];
       for (var k = 0; k < maxSize; k++) {
         // console.log("In loop k:", "i:", i, "k:", k);
+        var idx = "idx" + k + i;
+        checkCol.push(idx);
         if (keyColPiece !== gameArray[k][i].symbol) {
           colMatch = false;
           // console.log("colMatch:", colMatch);
@@ -210,6 +210,11 @@ function getPoints () {
         }
       }
       if (colMatch) {
+        for (var z = 0; z < maxSize; z++) {
+          var x = checkCol[z].charAt(3);
+          var y = checkCol[z].charAt(4);
+          $("#idx" + x + y +"").addClass("score");
+        }
         console.log("Column Match");
       }
     }
@@ -217,6 +222,7 @@ function getPoints () {
 }
 //
 // EVENT LISTENERS
+// !! add function to make event listeners not work if board is not playable
 // add click listeners - create fct parameters i, k
 $(".box").click(function(e) {
   // on click, switch gameArray box obj & switchPiece
