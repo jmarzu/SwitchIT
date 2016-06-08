@@ -1,9 +1,15 @@
 body {
     font-family: helvetica;
     min-width: 400px;
+    background-color: white;
 }
 h1 {
   color: rebeccapurple;
+  background-color: white;
+  margin: 20px 10;
+  border-top: 3px solid rebeccapurple;
+  border-bottom: 3px solid rebeccapurple;
+  padding: 3px 0px;
   }
 .rows {
   float: left;
@@ -12,6 +18,7 @@ h1 {
 }
 .backboard {
   max-width: 500px;
+  font-size: 16px;
 }
 .score-board {
   display: inline-block;
@@ -82,6 +89,11 @@ h1 {
 }
 .gray {
   background-image: url(images/gray_monster.png);
+  background-repeat: no-repeat;
+  background-size: 75px 75px;
+}
+.red {
+  background-image: url(images/red_monster.png);
   background-repeat: no-repeat;
   background-size: 75px 75px;
 }
