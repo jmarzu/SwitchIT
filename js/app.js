@@ -24,6 +24,10 @@ var monstersObjArray = [
   {
     symbol: "H",
     cssClass: "yellow"
+  },
+  {
+    symbol: "Z",
+    cssClass: "red"
   }
 ];
 // reference array for level properties
@@ -34,31 +38,35 @@ var levelObjArray = [
     maxMoves: 10,
     scoreGoal: 1200,
     pointsVal: 100,
+    maxMonsters: 4,
     danger: null
   },
   {
     level: 1,
     boxNumber: 4,
-    maxMoves: 10,
-    scoreGoal: 1200,
+    maxMoves: 12,
+    scoreGoal: 3600,
     pointsVal: 100,
+    maxMonsters: 5,
     danger: null
   },
   {
     level: 2,
     boxNumber: 5,
-    maxMoves: 10,
-    scoreGoal: 1200,
+    maxMoves: 14,
+    scoreGoal: 6000,
     pointsVal: 100,
+    maxMonsters: 5,
     danger: null
   }
 ];
 //
-var numberOfMonsters = monstersObjArray.length;
-var levelsArray = [3, 4, 5]; // might refactor to use levelObjArray
 var currentLevel = 0;
+var numberOfMonsters = levelObjArray[currentLevel].maxMonsters;
+var levelsArray = [3, 4, 5]; // might refactor to use levelObjArray
+console.log("nMon:", numberOfMonsters);
 //
-// IF true, EVENT HANDLERS ON
+// relates to event listeners
 var gameOn = true;
 // CREATE & STORE gameArray GLOBALLY
 var gameArray = setUpBoard();
@@ -78,11 +86,12 @@ $("#goal").text(scoreGoal);
 var pointsVal = levelObjArray[currentLevel].pointsVal;
 // SET SCORE TO ZERO
 var score = 0;
+$("#score").text(score);
 //
 //// **FUNCTIONS**
 //
 // CREATE RANDOM MONSTER
-// F:createRandomMonster: create 1 of 3 random monsters
+// F:createRandomMonster: creates random monster index
 function createRandomMonster() {
 // Random number logic
   return Math.floor(Math.random() * numberOfMonsters);
@@ -155,16 +164,12 @@ function switchPiece(row, col) {
   $("#idx" + row + col + "").switchClass(currentSwitchPiece.cssClass, gameArray[row][col].cssClass);
 }
 //
-// GAME LOGIC
+// **GAME LOGIC**
 //
 // POINTS LOGIC
 function getPoints () {
-  if (score < scoreGoal) {
   score = score + (maxSize * pointsVal);
-  // console.log("length:", maxSize);
-  // console.log("points:", pointsVal, "score:", score);
   $("#score").text(score);
-  }
 }
 //
 // CHECK FOR MATCHES - ROW & COL
@@ -172,7 +177,7 @@ function checkForMatches() {
   // for loop that continues until entire row is equal
   maxMoves = maxMoves - 1;
   $("#moves").text(maxMoves);
-  if (maxMoves !== 0) {
+  if (maxMoves > 0 && score < scoreGoal) {
     for (var i = 0; i < maxSize; i++) {
       var keyRowPiece = gameArray[i][0].cssClass;
       // winning until proven not winning
@@ -186,7 +191,7 @@ function checkForMatches() {
         // compare each box in row (reference currentLevel) to next
         var idx = "idx" + i + k;
         checkRow.push(idx);
-        console.log("cRow1:", checkRow);
+        // console.log("cRow1:", checkRow);
         // console.log("keyColPiece:", keyColPiece);
         if (keyRowPiece !== gameArray[i][k].cssClass) {
           rowMatch = false;
@@ -196,8 +201,6 @@ function checkForMatches() {
         }
       }
       if (rowMatch) {
-        // turn off event listeners
-        // gameOn = false;
         for (var z = 0; z < maxSize; z++) {
           var x = checkRow[z].charAt(3);
           var y = checkRow[z].charAt(4);
@@ -210,10 +213,11 @@ function checkForMatches() {
         // setTimeout then clear winning boxes and replace with new pieces
         var setRowDelay = setTimeout(function() {
           clearWinners(rowStore);
-        }, 1000);
+        }, 200);
       }
     }
     for (var i = 0; i < maxSize; i++) {
+      console.log("maxSize:", maxSize);
       var keyColPiece = gameArray[0][i].cssClass;
       var colMatch = true;
       // console.log("keyColPiece:", keyColPiece);
@@ -229,8 +233,6 @@ function checkForMatches() {
         }
       }
       if (colMatch) {
-        // turn off event listeners
-        // gameOn = false;
         for (var z = 0; z < maxSize; z++) {
           var x = checkCol[z].charAt(3);
           var y = checkCol[z].charAt(4);
@@ -243,13 +245,21 @@ function checkForMatches() {
         console.log("arrayCol:", checkCol);
         var colStore = checkCol;
         var setColDelay = setTimeout(function() {
+          console.log("colStore", colStore);
           clearWinners(colStore);
-        }, 300);
-        // console.log("Column Match");
+        }, 200);
       }
     }
-  } else {
+    if (score >= scoreGoal) {
+      alert("Winning!");
+      // change Levels
+      levelUp();
+      resetGame();
+      runGame();
+    }
+  } else if (maxMoves <= 0) {
     alert("No more moves!");
+    resetGame();
   }
 } // END checkForMatches
 //
@@ -273,24 +283,63 @@ function clearWinners (array) {
   });
 }
 //
+// LEVEL UP
+function levelUp() {
+  if (currentLevel < 3)  {
+    currentLevel++;
+    alert ("Go to Next Level!!");
+  } else if (currentLevel === 3) {
+    alert("That's all for now...");
+    currentLevel = 0;
+  }
+}
+// RESET GAME
+function resetGame() {
+  // remove old board
+  $(".rows").remove();
+  // update global variables
+  gameArray = setUpBoard();
+  currentSwitchPiece = createSwitchPiece();
+  maxSize = levelObjArray[currentLevel].boxNumber;
+  maxMoves = levelObjArray[currentLevel].maxMoves;
+  $("#moves").text(maxMoves);
+  scoreGoal = levelObjArray[currentLevel].scoreGoal;
+  $("#goal").text(scoreGoal);
+  pointsVal = levelObjArray[currentLevel].pointsVal;
+  var score = 0;
+  $("#score").text(score);
+  //
+  console.log("gameArray:", gameArray,
+    "maxSize:", maxSize,
+    "maxMoves:", maxMoves,
+    "scoreGoal:", scoreGoal,
+    "score:", score,
+    "gameOn:", gameOn,
+    "noMon:", numberOfMonsters);
+}
+//
 // EVENT LISTENERS
 // !! add function to make event listeners not work if board is not playable
 // add click listeners - create fct parameters i, k
-if (gameOn) {
-  $(".box").click(function(e) {
-    // on click, switch gameArray box obj & switchPiece
-    var indexString = $(this).attr("id");
-    // console.log("this: ", this);
-    // console.log("indexString: ", indexString);
-    var x = indexString.charAt(3);
-    var y = indexString.charAt(4);
-    // console.log(x, " ", y);
-    switchPiece(x, y);
-    checkForMatches();
-    // check for winning combo (also do before game starts)
-  });
-}
 //
 // RUN GAME
+function runGame () {
+  $(".box").click(function(e) {
+    if (gameOn) {
+      // on click, switch gameArray box obj & switchPiece
+      var indexString = $(this).attr("id");
+      // console.log("this: ", this);
+      // console.log("indexString: ", indexString);
+      var x = indexString.charAt(3);
+      var y = indexString.charAt(4);
+      // console.log(x, " ", y);
+      switchPiece(x, y);
+      checkForMatches();
+      // check for winning combo
+    }
+  });
+}
+// START!
+runGame();
 //
 }); // End Ready
