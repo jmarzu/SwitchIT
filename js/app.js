@@ -61,7 +61,7 @@ var levelObjArray = [
   }
 ];
 //
-var currentLevel = 0;
+var currentLevel = 1;
 var numberOfMonsters = levelObjArray[currentLevel].maxMonsters;
 var levelsArray = [3, 4, 5]; // might refactor to use levelObjArray
 console.log("nMon:", numberOfMonsters);
@@ -93,14 +93,15 @@ $("#score").text(score);
 // CREATE RANDOM MONSTER
 // F:createRandomMonster: creates random monster index
 function createRandomMonster() {
-// Random number logic
-  return Math.floor(Math.random() * numberOfMonsters);
+  // create random monster index
+  var localMonsterIdx = Math.floor(Math.random() * numberOfMonsters);
+  var monsterObj = JSON.parse(JSON.stringify(monstersObjArray[localMonsterIdx]));
+  return monsterObj;
 }
 //
 // CREATE SWITCH PIECE
 function createSwitchPiece() {
-  var localSwitchIdx = createRandomMonster();
-  var switchPiece = JSON.parse(JSON.stringify(monstersObjArray[localSwitchIdx]));
+  var switchPiece = createRandomMonster();
   // switchPiece.currentIndex = "switch-piece";
   $("#switch-piece").addClass(switchPiece.cssClass);
   return switchPiece;
@@ -123,18 +124,18 @@ function setUpBoard() {
       // push columns to html
       $("#row" + i).append(box);
       // create random monster index
-      var localMonsterIdx = createRandomMonster();
+      // var localMonsterIdx = createRandomMonster();
       // create local random monster obj that *does not reference original obj*
-      var kLocalObj = JSON.parse(JSON.stringify(monstersObjArray[localMonsterIdx]));
+      var localMonsterObj = createSwitchPiece();
       // set monster property currentIndex to idx[i]k[]
-      // RETIRED // kLocalObj.currentIndex = $("#idx" + i + k + "").attr("id");
+      // RETIRED // localMonsterObj.currentIndex = $("#idx" + i + k + "").attr("id");
       // add monster to gameArray (we are at position i, k)
-      localArray2.push(kLocalObj);
-      // console.log("kLocalObj: ", JSON.stringify(kLocalObj));
-      // console.log("kIndex: ", kLocalObj.currentIndex);
+      localArray2.push(localMonsterObj);
+      // console.log("localMonsterObj: ", JSON.stringify(localMonsterObj));
+      // console.log("kIndex: ", localMonsterObj.currentIndex);
       // assign monster symbols to gameboard
-      // $("#idx" + i + k + "").html(kLocalObj.cssClass);
-      $("#idx" + i + k + "").addClass(kLocalObj.cssClass);
+      // $("#idx" + i + k + "").html(localMonsterObj.cssClass);
+      $("#idx" + i + k + "").addClass(localMonsterObj.cssClass);
   // console.log("localArray2: ", JSON.stringify(localArray2));
     }
   // console.log("localArray2: ", JSON.stringify(localArray2));
@@ -146,7 +147,6 @@ function setUpBoard() {
 // PLAYER MOVE LOGIC
 function switchPiece(row, col) {
   // create temperary reference to currentSwitchPiece
-  // var tempGamePiece = gameArray[row][col];
   var tempSwitchPiece = currentSwitchPiece;
   // console.log("tempGP: ", JSON.stringify(tempSwitchPiece));
   // console.log("tempSP: ", tempSwitchPiece);
@@ -172,114 +172,187 @@ function getPoints () {
   $("#score").text(score);
 }
 //
+function checkRow() {
+  for (var i = 0; i < maxSize; i++) {
+      var keyRowPiece = gameArray[i][0].cssClass;
+      // winning until proven not winning
+      var rowMatch = true;
+      var checkRowArray = [];
+      // console.log("keyRowPiece:", keyRowPiece);
+      // console.log("In loop i");
+    for (var k = 0; k < maxSize; k++) {
+      // console.log("In loop k:", "i:", i, "k:", k);
+      // console.log("gameArray:", JSON.stringify(gameArray));
+      // compare each box in row (reference currentLevel) to next
+      var idx = "idx" + i + k;
+      checkRowArray.push(idx);
+      // console.log("cRow1:", checkRowArray);
+      // console.log("keyColPiece:", keyColPiece);
+      if (keyRowPiece !== gameArray[i][k].cssClass) {
+        rowMatch = false;
+        // console.log("Match", rowMatch);
+        // console.log("checkRowArray:", checkRowArray);
+        break;
+      }
+    }
+    if (rowMatch) {
+      handleMatchResults(checkRowArray);
+    }
+  }
+}
+// CHECK COLUMN
+function checkCol() {
+  for (var i = 0; i < maxSize; i++) {
+    console.log("maxSize:", maxSize);
+    var keyColPiece = gameArray[0][i].cssClass;
+    var colMatch = true;
+    // console.log("keyColPiece:", keyColPiece);
+    var checkColArray = [];
+    for (var k = 0; k < maxSize; k++) {
+      // console.log("In loop k:", "i:", i, "k:", k);
+      var idx = "idx" + k + i;
+      checkColArray.push(idx);
+      if (keyColPiece !== gameArray[k][i].cssClass) {
+        colMatch = false;
+        // console.log("colMatch:", colMatch);
+        break;
+      }
+    }
+    if (colMatch) {
+      handleMatchResults(checkColArray);
+    }
+  }
+}
+// HANDLE RESULTS FROM MATCHES
+function handleMatchResults (array) {
+  for (var z = 0; z < maxSize; z++) {
+    var x = array[z].charAt(3);
+    var y = array[z].charAt(4);
+    $("#idx" + x + y + "").removeClass(gameArray[x][y].cssClass);
+    $("#idx" + x + y + "").addClass("score");
+    // $("#idx" + x + y + "").switchClass(gameArray[x][y].cssClass, "score", 1000, "easeOutBounce");
+  }
+  getPoints();
+  var store = array;
+  // setTimeout then clear winning boxes and replace with new pieces
+  var setRowDelay = setTimeout(function() {
+    clearWinners(store);
+  }, 200);
+}
+
 // CHECK FOR MATCHES - ROW & COL
 function checkForMatches() {
   // for loop that continues until entire row is equal
   maxMoves = maxMoves - 1;
   $("#moves").text(maxMoves);
   if (maxMoves > 0 && score < scoreGoal) {
-    for (var i = 0; i < maxSize; i++) {
-      var keyRowPiece = gameArray[i][0].cssClass;
-      // winning until proven not winning
-      var rowMatch = true;
-      var checkRow = [];
-      // console.log("keyRowPiece:", keyRowPiece);
-      // console.log("In loop i");
-      for (var k = 0; k < maxSize; k++) {
-        // console.log("In loop k:", "i:", i, "k:", k);
-        // console.log("gameArray:", JSON.stringify(gameArray));
-        // compare each box in row (reference currentLevel) to next
-        var idx = "idx" + i + k;
-        checkRow.push(idx);
-        // console.log("cRow1:", checkRow);
-        // console.log("keyColPiece:", keyColPiece);
-        if (keyRowPiece !== gameArray[i][k].cssClass) {
-          rowMatch = false;
-          // console.log("Match", rowMatch);
-          // console.log("checkRow:", checkRow);
-          break;
-        }
-      }
-      if (rowMatch) {
-        for (var z = 0; z < maxSize; z++) {
-          var x = checkRow[z].charAt(3);
-          var y = checkRow[z].charAt(4);
-          $("#idx" + x + y + "").removeClass(gameArray[x][y].cssClass);
-          $("#idx" + x + y + "").addClass("score");
-          // $("#idx" + x + y + "").switchClass(gameArray[x][y].cssClass, "score", 1000, "easeOutBounce");
-        }
-        getPoints();
-        var rowStore = checkRow;
-        // setTimeout then clear winning boxes and replace with new pieces
-        var setRowDelay = setTimeout(function() {
-          clearWinners(rowStore);
-        }, 200);
-      }
-    }
-    for (var i = 0; i < maxSize; i++) {
-      console.log("maxSize:", maxSize);
-      var keyColPiece = gameArray[0][i].cssClass;
-      var colMatch = true;
-      // console.log("keyColPiece:", keyColPiece);
-      var checkCol = [];
-      for (var k = 0; k < maxSize; k++) {
-        // console.log("In loop k:", "i:", i, "k:", k);
-        var idx = "idx" + k + i;
-        checkCol.push(idx);
-        if (keyColPiece !== gameArray[k][i].cssClass) {
-          colMatch = false;
-          // console.log("colMatch:", colMatch);
-          break;
-        }
-      }
-      if (colMatch) {
-        for (var z = 0; z < maxSize; z++) {
-          var x = checkCol[z].charAt(3);
-          var y = checkCol[z].charAt(4);
-          // $("#idx" + x + y + "").switchClass(gameArray[x][y].cssClass, "score");
-          $("#idx" + x + y + "").removeClass(gameArray[x][y].cssClass);
-          $("#idx" + x + y + "").addClass("score");
-        }
-        getPoints();
-        // setTimeout then clear winning boxes and replace with new pieces
-        console.log("arrayCol:", checkCol);
-        var colStore = checkCol;
-        var setColDelay = setTimeout(function() {
-          console.log("colStore", colStore);
-          clearWinners(colStore);
-        }, 200);
-      }
-    }
-    if (score >= scoreGoal) {
+    checkRow();
+    checkCol();
+    // for (var i = 0; i < maxSize; i++) {
+    //   var keyRowPiece = gameArray[i][0].cssClass;
+    //   // winning until proven not winning
+    //   var rowMatch = true;
+    //   var checkRow = [];
+    //   // console.log("keyRowPiece:", keyRowPiece);
+    //   // console.log("In loop i");
+    //   for (var k = 0; k < maxSize; k++) {
+    //     // console.log("In loop k:", "i:", i, "k:", k);
+    //     // console.log("gameArray:", JSON.stringify(gameArray));
+    //     // compare each box in row (reference currentLevel) to next
+    //     var idx = "idx" + i + k;
+    //     checkRow.push(idx);
+    //     // console.log("cRow1:", checkRow);
+    //     // console.log("keyColPiece:", keyColPiece);
+    //     if (keyRowPiece !== gameArray[i][k].cssClass) {
+    //       rowMatch = false;
+    //       // console.log("Match", rowMatch);
+    //       // console.log("checkRow:", checkRow);
+    //       break;
+    //     }
+    //   }
+      // if (rowMatch) {
+      //   for (var z = 0; z < maxSize; z++) {
+      //     var x = checkRow[z].charAt(3);
+      //     var y = checkRow[z].charAt(4);
+      //     $("#idx" + x + y + "").removeClass(gameArray[x][y].cssClass);
+      //     $("#idx" + x + y + "").addClass("score");
+      //     // $("#idx" + x + y + "").switchClass(gameArray[x][y].cssClass, "score", 1000, "easeOutBounce");
+      //   }
+      //   getPoints();
+      //   var rowStore = checkRow;
+      //   // setTimeout then clear winning boxes and replace with new pieces
+      //   var setRowDelay = setTimeout(function() {
+      //     clearWinners(rowStore);
+      //   }, 200);
+      // }
+    // }
+    // for (var i = 0; i < maxSize; i++) {
+    //   console.log("maxSize:", maxSize);
+    //   var keyColPiece = gameArray[0][i].cssClass;
+    //   var colMatch = true;
+    //   // console.log("keyColPiece:", keyColPiece);
+    //   var checkCol = [];
+    //   for (var k = 0; k < maxSize; k++) {
+    //     // console.log("In loop k:", "i:", i, "k:", k);
+    //     var idx = "idx" + k + i;
+    //     checkCol.push(idx);
+    //     if (keyColPiece !== gameArray[k][i].cssClass) {
+    //       colMatch = false;
+    //       // console.log("colMatch:", colMatch);
+    //       break;
+    //     }
+    //   }
+      // if (colMatch) {
+      //   for (var z = 0; z < maxSize; z++) {
+      //     var x = checkCol[z].charAt(3);
+      //     var y = checkCol[z].charAt(4);
+      //     // $("#idx" + x + y + "").switchClass(gameArray[x][y].cssClass, "score");
+      //     $("#idx" + x + y + "").removeClass(gameArray[x][y].cssClass);
+      //     $("#idx" + x + y + "").addClass("score");
+      //   }
+      //   getPoints();
+      //   // setTimeout then clear winning boxes and replace with new pieces
+      //   console.log("arrayCol:", checkCol);
+      //   var colStore = checkCol;
+      //   var setColDelay = setTimeout(function() {
+      //     console.log("colStore", colStore);
+      //     clearWinners(colStore);
+      //   }, 200);
+      // }
+      // break
+  } else if (score >= scoreGoal) {
       alert("Winning!");
       // change Levels
       levelUp();
       resetGame();
       runGame();
-    }
   } else if (maxMoves <= 0) {
     alert("No more moves!");
     resetGame();
   }
 } // END checkForMatches
 //
+// SCRAP FOR DUPS
+// function scrapForDups (match) {
+//   if (match) {
+
+//   }
+// }
 // CLEAR WINNERS
 function clearWinners (array) {
   array.forEach(function(e) {
-    // create random monster index
-    var localMonsterIdx = createRandomMonster();
     // create local random monster obj that *does not reference original obj*
-    var kLocalObj = JSON.parse(JSON.stringify(monstersObjArray[localMonsterIdx]));
+    var localMonsterObj = createRandomMonster();
     // extract location from e
     console.log("e:", e);
     var x = e.charAt(3);
     var y = e.charAt(4);
-    console.log(x, " ", y);
+    // console.log(x, " ", y);
     // add monster to gameArray at index
-    gameArray[x][y] = kLocalObj;
+    gameArray[x][y] = localMonsterObj;
     // update gameboard with new monster
     $("#" + e + "").removeClass("score");
-    $("#" + e + "").addClass(kLocalObj.cssClass);
+    $("#" + e + "").addClass(localMonsterObj.cssClass);
   });
 }
 //
