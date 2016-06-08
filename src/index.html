@@ -3,28 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" href="dist/sweetalert.css">
   <link rel="stylesheet" type="text/css" href="css/style.css">
   <title>switchIt</title>
 </head>
 <body>
   <h1>switchIt</h1>
   <div class="backboard">
-    <div>
-    <p class="info"></p>
-    <button type="button"></button>
-    </div>
     <div class="switch-card">
       <div id="switch-piece">
       </div>
     </div>
     <div class="score-board">
-      <h4>Score Goal: <span id="goal"></span></h4>
+      <h4>Goal: <span class="goal" id="goal"></span></h4>
       <p class="game-input" id="score">
       </p>
     </div>
     <div class="move-board">
       <h4>Moves</h4>
       <p class="game-input" id="moves"></p>
+    </div>
+    <div class="level">
+      <h4>Level : <span class="game-input" id="level"></span></h4>
     </div>
   </div>
   <div class="game-board" id="board">
@@ -33,6 +33,7 @@
 
   <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
   <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js" integrity="sha256-xNjb53/rY+WmG+4L6tTl9m6PpqknWZvRt0rO1SRnJzw=" crossorigin="anonymous"></script>
+  <script src="dist/sweetalert.min.js"></script>
   <script type="text/javascript" src="js/app.js"></script>
 </body>
 </html>

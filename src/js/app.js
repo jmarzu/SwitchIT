@@ -5,7 +5,19 @@ $(document).ready(function () {
   }, function () {
     $(this).css("text-decoration", "none");
   });
+
+swal({
+  title: "Welcome to <span style'color:brown'>switchIt</span>!",
+  text: "Switch your key piece with pieces on the board in order to match monsters across an entire row or column to get points.",
+  html: true
+});
 //
+// setTimeout(function() {
+//   $("#launchModal").on('shown.bs.modal', function () {
+//       $(".modal").css('display', 'block');
+//   });
+//   $("#launchModal").modal('show');
+// }, 2000);
 //// **GLOBAL VARIABLES**
 // reference array for monster objects
 var monstersObjArray = [
@@ -35,8 +47,8 @@ var levelObjArray = [
   {
     level: 0,
     boxNumber: 3,
-    maxMoves: 10,
-    scoreGoal: 1500,
+    maxMoves: 20,
+    scoreGoal: 3000,
     pointsVal: 100,
     maxMonsters: 4,
     danger: null
@@ -44,8 +56,8 @@ var levelObjArray = [
   {
     level: 1,
     boxNumber: 4,
-    maxMoves: 12,
-    scoreGoal: 3000,
+    maxMoves: 24,
+    scoreGoal: 6000,
     pointsVal: 100,
     maxMonsters: 5,
     danger: null
@@ -53,7 +65,7 @@ var levelObjArray = [
   {
     level: 2,
     boxNumber: 5,
-    maxMoves: 14,
+    maxMoves: 28,
     scoreGoal: 4500,
     pointsVal: 100,
     maxMonsters: 5,
@@ -82,6 +94,9 @@ $("#moves").text(maxMoves);
 // SET UP SCORE GOAL
 var scoreGoal = levelObjArray[currentLevel].scoreGoal;
 $("#goal").text(scoreGoal);
+// DISPLAY CURRENT LEVEL TO USER
+var userLevel = currentLevel + 1;
+$("#level").text(userLevel);
 // SET UP POINTS VALUE
 var pointsVal = levelObjArray[currentLevel].pointsVal;
 // SET SCORE TO ZERO
@@ -123,22 +138,13 @@ function setUpBoard() {
       var box = $("<div class='box' id='idx" + i + k + "'></div>");
       // push columns to html
       $("#row" + i).append(box);
-      // create random monster index
-      // var localMonsterIdx = createRandomMonster();
       // create local random monster obj that *does not reference original obj*
       var localMonsterObj = createSwitchPiece();
-      // set monster property currentIndex to idx[i]k[]
-      // RETIRED // localMonsterObj.currentIndex = $("#idx" + i + k + "").attr("id");
       // add monster to gameArray (we are at position i, k)
       localArray2.push(localMonsterObj);
-      // console.log("localMonsterObj: ", JSON.stringify(localMonsterObj));
-      // console.log("kIndex: ", localMonsterObj.currentIndex);
       // assign monster symbols to gameboard
-      // $("#idx" + i + k + "").html(localMonsterObj.cssClass);
       $("#idx" + i + k + "").addClass(localMonsterObj.cssClass);
-  // console.log("localArray2: ", JSON.stringify(localArray2));
     }
-  // console.log("localArray2: ", JSON.stringify(localArray2));
   localArray1.push(localArray2);
   }
   return localArray1;
@@ -148,25 +154,17 @@ function setUpBoard() {
 function switchPiece(row, col) {
   // create temperary reference to currentSwitchPiece
   var tempSwitchPiece = currentSwitchPiece;
-  // console.log("tempGP: ", JSON.stringify(tempSwitchPiece));
-  // console.log("tempSP: ", tempSwitchPiece);
   // set currentSwitchPiece to gameboard obj data
   currentSwitchPiece = gameArray[row][col];
-  // console.log("New curSwP: ", JSON.stringify(currentSwitchPiece));
-  // update HTML UI to show new cssClass
-  // $("#switch-piece").addClass(currentSwitchPiece.cssClass);
+  // update HTML classes to remove old class and add new cssClass
   $("#switch-piece").removeClass();
   $("#switch-piece").addClass(currentSwitchPiece.cssClass);
   // set gameboard obj to tempSwitchPiece data
   gameArray[row][col] = tempSwitchPiece;
-  // console.log("New gameP: ", JSON.stringify(gameArray[row][col]));
   // update addClass UI to show new cssClass
-  // $("#idx" + row + col + "").addClass(gameArray[row][col].cssClass);
   $("#idx" + row + col + "").removeClass(currentSwitchPiece.cssClass);
   $("#idx" + row + col + "").addClass(gameArray[row][col].cssClass);
 }
-//
-// **GAME LOGIC**
 //
 // POINTS LOGIC
 function getPoints () {
@@ -174,6 +172,7 @@ function getPoints () {
   $("#score").text(score);
 }
 //
+// CHECK ROWS FOR HORIZONTAL MATCHES
 function checkRow() {
   for (var i = 0; i < maxSize; i++) {
       var keyRowPiece = gameArray[i][0].cssClass;
@@ -189,12 +188,15 @@ function checkRow() {
         break;
       }
     }
-    if (rowMatch) {
+    if (rowMatch && gameOn) {
       handleMatchResults(checkRowArray);
+    // } else if (rowMatch && !gameOn) {
+    //   clearWinners(checkRowArray);
     }
   }
+  // return rowMatch;
 }
-// CHECK COLUMN
+// CHECK COLUMNS FOR VERTICAL MATCHES
 function checkCol() {
   for (var i = 0; i < maxSize; i++) {
     console.log("maxSize:", maxSize);
@@ -211,11 +213,16 @@ function checkCol() {
         // console.log("colMatch:", colMatch);
         break;
       }
+      console.log("colMatch in innerloop:", colMatch);
     }
-    if (colMatch) {
+    if (colMatch && gameOn) {
       handleMatchResults(checkColArray);
+    // } else if (colMatch && !gameOn) {
+    //   clearWinners (checkColArray);
     }
+  console.log("colMatch in outerloop:", colMatch);
   }
+  // return colMatch;
 }
 // HANDLE RESULTS FROM MATCHES
 function handleMatchResults (array) {
@@ -224,14 +231,14 @@ function handleMatchResults (array) {
     var y = array[i].charAt(4);
     $("#" + array[i]).removeClass(gameArray[x][y].cssClass);
     $("#" + array[i]).addClass("score");
-    // $("#idx" + x + y + "").switchClass(gameArray[x][y].cssClass, "score", 1000, "easeOutBounce");
+    console.log("array[i]:", array[i]);
+    // $("#" + array[i]).switchClass(gameArray[x][y].cssClass, "score", 5000, "easeInOutQuad");
   }
   getPoints();
-  // var store = array;
   // setTimeout then clear winning boxes and replace with new pieces
-  // var setRowDelay = setTimeout(function() {
-  clearWinners(array);
-  // }, 200);
+  var setRowDelay = setTimeout(function() {
+    clearWinners(array);
+  }, 300);
 }
 
 // CHECK FOR MATCHES - ROW & COL
@@ -239,25 +246,34 @@ function checkForMatches() {
   if (maxMoves > 0 && score < scoreGoal) {
     checkRow();
     checkCol();
-  } else if (score >= scoreGoal) {
-    alert("Winning!");
+  }
+  if (score >= scoreGoal) {
+    swal ("Winning! Go to Next Level!!");
     // change Levels
     levelUp();
     resetGame();
     runGame();
+    console.log("score:", score);
   } else if (maxMoves <= 0) {
-    alert("No more moves!");
+    swal("Sorry! You ran out of moves!");
     resetGame();
     runGame();
   }
 } // END checkForMatches
 //
-// SCRAP FOR DUPS
-// function scrapForDups (match) {
-//   if (match) {
-
+// CHECK FOR DUPS BEFORE GAME START & AFTER MATCHES
+// function checkForDups() {
+//   var colResult = true;
+//   var rowResult = true;
+//   do {
+//     colResult = checkCol();
+//     rowResult = checkRow();
+//   } while (colResult || rowResult);
+//   if (!colResult && !rowResult) {
+//     gameOn = true;
 //   }
 // }
+//
 // CLEAR WINNERS
 function clearWinners (array) {
   array.forEach(function(e) {
@@ -274,15 +290,16 @@ function clearWinners (array) {
     $("#" + e).removeClass("score");
     $("#" + e).addClass(localMonsterObj.cssClass);
   });
+  // checkForDups();
 }
 //
 // LEVEL UP
 function levelUp() {
-  if (currentLevel < 3)  {
+  console.log("LevelUpBefore:", currentLevel)
+  if (currentLevel < (levelsArray.length - 2))  {
     currentLevel++;
-    alert ("Go to Next Level!!");
-  } else if (currentLevel === 3) {
-    alert("That's all for now...");
+  } else if (currentLevel === (levelsArray.length - 1)) {
+    swal("That's all for now...");
     currentLevel = 0;
   }
 }
@@ -301,6 +318,9 @@ function resetGame() {
   pointsVal = levelObjArray[currentLevel].pointsVal;
   var score = 0;
   $("#score").text(score);
+  console.log("resetScore:", score);
+  var userLevel = currentLevel + 1;
+  $("#level").text(userLevel);
   //
   console.log("gameArray:", gameArray,
     "maxSize:", maxSize,
@@ -318,18 +338,33 @@ function resetGame() {
 // RUN GAME
 function runGame () {
   $(".box").click(function(e) {
-    if (gameOn) {
+    // if (gameOn) {
       maxMoves = maxMoves - 1;
       $("#moves").text(maxMoves);
       var indexString = $(this).attr("id");
       var x = indexString.charAt(3);
       var y = indexString.charAt(4);
-      switchPiece(x, y);
-      checkForMatches();
-    }
+      if (gameOn) {
+        switchPiece(x, y);
+        checkForMatches();
+        // checkForDups();
+      }
   });
 }
 // START!
+// checkForDups();
 runGame();
 //
 }); // End Ready
+
+// $( "button" ).on( "click", function() {
+//   $( "p" ).append( "Started..." );
+
+//   $( "div" ).each(function( i ) {
+//     $( this ).fadeIn().fadeOut( 1000 * ( i + 1 ) );
+//   });
+
+//   $( "div" ).promise().done(function() {
+//     $( "p" ).append( " Finished! " );
+//   });
+// });

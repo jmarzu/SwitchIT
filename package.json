@@ -6,7 +6,7 @@
     "start": "node_modules/browser-sync/bin/browser-sync.js start --server 'src' --files 'src'",
     "deploy": "git subtree push --prefix src origin gh-pages"
   },
-  "author": "",
+  "author": "Krista Calderon",
   "license": "MIT",
   "devDependencies": {
     "babel-eslint": "^6.0.4",
