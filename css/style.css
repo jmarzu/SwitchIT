@@ -1,15 +1,15 @@
 body {
     font-family: helvetica;
-    min-width: 400px;
+    min-width: 500px;
     background-color: white;
 }
 h1 {
   color: brown;
   background-color: white;
-  margin: 20px 10;
+  margin: 10px 10;
   border-top: 3px solid brown;
   border-bottom: 3px solid brown;
-  padding: 3px 0px;
+  padding: 3px 0;
   }
 h4 {
   border-bottom: 2px solid brown;
@@ -18,14 +18,13 @@ h4 {
 .rows {
   float: left;
   width: 100%;
-  margin: 0 20px;
+  margin: 0 60px;
 }
 .backboard {
   max-width: 500px;
   font-size: 18px;
 }
 .score-board {
-  display: inline-block;
   float: right;
   width: 120px;
   text-align: center;
@@ -34,7 +33,6 @@ h4 {
   color: red;
 }
 .move-board {
-  display: inline-block;
   float: right;
   width: 100px;
   text-align: center;
@@ -44,7 +42,6 @@ h4 {
 }
 .box {
   float: left;
-  /*border: 1px solid purple;*/
   border-radius: 5%;
   height: 75px;
   width: 75px;
@@ -54,7 +51,6 @@ h4 {
   background-color: gray;
 }
 .switch-card {
-  /*position: absolute;*/
   display: inline-block;
   margin: 2px 40px 10px 30px;
   text-align: right;
@@ -65,7 +61,6 @@ h4 {
   box-shadow: 10px 10px 5px #888888;
 }
 #switch-piece {
-  /*border: 1px solid purple;*/
   border-radius: 5px;
   margin: 11px 11px;
   height: 75px;
@@ -81,9 +76,8 @@ h4 {
   color: blue;
 }
 .game-board {
-  /*position: relative;*/
   text-align: center;
-  min-width: 300px
+  min-width: 500px;
   margin: 5px 5px 5px 30px;
 }
 .score {
@@ -127,7 +121,7 @@ h4 {
   background-size: 75px 75px;
 }
 .gray2 {
-  background-image: url(images/green_monster_2.png);
+  background-image: url(images/gray_monster_2.png);
   background-repeat: no-repeat;
   background-size: 75px 75px;
 }
