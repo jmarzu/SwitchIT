@@ -5,11 +5,21 @@ $(document).ready(function () {
   }, function () {
     $(this).css("text-decoration", "none");
   });
-
+//
+// AT LOAD
 swal({
-  title: "Welcome to <span style'color:brown'>switchIt</span>!",
-  text: "Switch your key piece with pieces on the board in order to match monsters across an entire row or column to get points.",
+  title: "switchIt!",
+  subtitle: "Switch your key piece with pieces on the board",
+  text: "Match monsters across an entire row or column to get points!",
   html: true
+});
+// INFO BUTTON
+$("#button").click(function() {
+  console.log("click");
+  swal({
+    title: "This is your switch piece!",
+    text: "Switch this piece with one on the board to match a row or column and win points!"
+  });
 });
 //
 // setTimeout(function() {
@@ -40,7 +50,19 @@ var monstersObjArray = [
   {
     symbol: "Z",
     cssClass: "red"
-  }
+  },
+  {
+    symbol: "T",
+    cssClass: "blue2"
+  },
+  {
+    symbol: "P",
+    cssClass: "yellow2"
+  },
+  {
+    symbol: "L",
+    cssClass: "gray2"
+  },
 ];
 // reference array for level properties
 var levelObjArray = [
@@ -57,7 +79,7 @@ var levelObjArray = [
     level: 1,
     boxNumber: 4,
     maxMoves: 24,
-    scoreGoal: 6000,
+    scoreGoal: 4000,
     pointsVal: 100,
     maxMonsters: 5,
     danger: null
@@ -66,16 +88,43 @@ var levelObjArray = [
     level: 2,
     boxNumber: 5,
     maxMoves: 28,
-    scoreGoal: 4500,
+    scoreGoal: 5000,
     pointsVal: 100,
     maxMonsters: 5,
+    danger: null
+  },
+  {
+    level: 3,
+    boxNumber: 3,
+    maxMoves: 20,
+    scoreGoal: 3000,
+    pointsVal: 100,
+    maxMonsters: 6,
+    danger: null
+  },
+  {
+    level: 4,
+    boxNumber: 4,
+    maxMoves: 24,
+    scoreGoal: 4000,
+    pointsVal: 100,
+    maxMonsters: 7,
+    danger: null
+  },
+  {
+    level: 5,
+    boxNumber: 5,
+    maxMoves: 28,
+    scoreGoal: 5000,
+    pointsVal: 100,
+    maxMonsters: 8,
     danger: null
   }
 ];
 //
-var currentLevel = 0;
+var currentLevel = 4;
 var numberOfMonsters = levelObjArray[currentLevel].maxMonsters;
-var levelsArray = [3, 4, 5]; // might refactor to use levelObjArray
+var levelsArray = [3, 4, 5, 3, 4, 5]; // might refactor to use levelObjArray
 console.log("nMon:", numberOfMonsters);
 //
 // relates to event listeners
@@ -157,12 +206,11 @@ function switchPiece(row, col) {
   // set currentSwitchPiece to gameboard obj data
   currentSwitchPiece = gameArray[row][col];
   // update HTML classes to remove old class and add new cssClass
-  $("#switch-piece").removeClass();
-  $("#switch-piece").addClass(currentSwitchPiece.cssClass);
+  $("#switch-piece").removeClass().addClass(currentSwitchPiece.cssClass);
   // set gameboard obj to tempSwitchPiece data
   gameArray[row][col] = tempSwitchPiece;
   // update addClass UI to show new cssClass
-  $("#idx" + row + col + "").removeClass(currentSwitchPiece.cssClass);
+  $("#idx" + row + col + "").removeClass().addClass("box");
   $("#idx" + row + col + "").addClass(gameArray[row][col].cssClass);
 }
 //
@@ -229,8 +277,8 @@ function handleMatchResults (array) {
   for (var i = 0; i < maxSize; i++) {
     var x = array[i].charAt(3);
     var y = array[i].charAt(4);
-    $("#" + array[i]).removeClass(gameArray[x][y].cssClass);
-    $("#" + array[i]).addClass("score");
+    $("#" + array[i]).removeClass();
+    $("#" + array[i]).addClass("box score");
     console.log("array[i]:", array[i]);
     // $("#" + array[i]).switchClass(gameArray[x][y].cssClass, "score", 5000, "easeInOutQuad");
   }
@@ -253,7 +301,6 @@ function checkForMatches() {
     levelUp();
     resetGame();
     runGame();
-    console.log("score:", score);
   } else if (maxMoves <= 0) {
     swal("Sorry! You ran out of moves!");
     resetGame();
@@ -287,7 +334,7 @@ function clearWinners (array) {
     // add monster to gameArray at index
     gameArray[x][y] = localMonsterObj;
     // update gameboard with new monster
-    $("#" + e).removeClass("score");
+    $("#" + e).removeClass().addClass("box");
     $("#" + e).addClass(localMonsterObj.cssClass);
   });
   // checkForDups();
@@ -296,12 +343,15 @@ function clearWinners (array) {
 // LEVEL UP
 function levelUp() {
   console.log("LevelUpBefore:", currentLevel)
-  if (currentLevel < (levelsArray.length - 2))  {
+  if (currentLevel < (levelsArray.length - 1))  {
     currentLevel++;
+  } if (currentLevel === 3) {
+    swal("Let's try something harder...");
   } else if (currentLevel === (levelsArray.length - 1)) {
     swal("That's all for now...");
     currentLevel = 0;
   }
+  console.log("levelUpAfter:", currentLevel);
 }
 // RESET GAME
 function resetGame() {
@@ -316,9 +366,8 @@ function resetGame() {
   scoreGoal = levelObjArray[currentLevel].scoreGoal;
   $("#goal").text(scoreGoal);
   pointsVal = levelObjArray[currentLevel].pointsVal;
-  var score = 0;
+  score = 0;
   $("#score").text(score);
-  console.log("resetScore:", score);
   var userLevel = currentLevel + 1;
   $("#level").text(userLevel);
   //
@@ -328,12 +377,11 @@ function resetGame() {
     "scoreGoal:", scoreGoal,
     "score:", score,
     "gameOn:", gameOn,
-    "noMon:", numberOfMonsters);
+    "noMon:", numberOfMonsters,
+    "currentLevel:", currentLevel);
 }
 //
-// EVENT LISTENERS
-// !! add function to make event listeners not work if board is not playable
-// add click listeners - create fct parameters i, k
+//  **EVENT LISTENERS**
 //
 // RUN GAME
 function runGame () {
@@ -356,15 +404,3 @@ function runGame () {
 runGame();
 //
 }); // End Ready
-
-// $( "button" ).on( "click", function() {
-//   $( "p" ).append( "Started..." );
-
-//   $( "div" ).each(function( i ) {
-//     $( this ).fadeIn().fadeOut( 1000 * ( i + 1 ) );
-//   });
-
-//   $( "div" ).promise().done(function() {
-//     $( "p" ).append( " Finished! " );
-//   });
-// });
