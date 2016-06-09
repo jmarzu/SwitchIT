@@ -56,8 +56,7 @@ h4 {
 .switch-card {
   /*position: absolute;*/
   display: inline-block;
-  margin-bottom: 20px;
-  margin-left: 20px;
+  margin: 2px 40px 10px 30px;
   text-align: right;
   height: 100px;
   width: 100px;
@@ -68,18 +67,24 @@ h4 {
 #switch-piece {
   /*border: 1px solid purple;*/
   border-radius: 5px;
-  margin: 10px 10px;
+  margin: 11px 11px;
   height: 75px;
   width: 75px;
   text-align: center;
   line-height: 75px;
 /*  font-size: 75px;*/
 }
+.button {
+  display: inline-block;
+  float: right;
+  margin: 0;
+  color: blue;
+}
 .game-board {
   /*position: relative;*/
   text-align: center;
   min-width: 300px
-  margin: auto auto;
+  margin: 5px 5px 5px 30px;
 }
 .score {
   background-image: url(images/Score.png);
@@ -108,6 +113,21 @@ h4 {
 }
 .red {
   background-image: url(images/red_monster.png);
+  background-repeat: no-repeat;
+  background-size: 75px 75px;
+}
+.yellow2 {
+  background-image: url(images/yellow_monster_2.png);
+  background-repeat: no-repeat;
+  background-size: 75px 75px;
+}
+.blue2 {
+  background-image: url(images/blue_monster_2.png);
+  background-repeat: no-repeat;
+  background-size: 75px 75px;
+}
+.gray2 {
+  background-image: url(images/green_monster_2.png);
   background-repeat: no-repeat;
   background-size: 75px 75px;
 }
