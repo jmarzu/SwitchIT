@@ -37,13 +37,15 @@ These script links in the appropriate format at the bottom of your HTML in the b
 ##Reach Goals
 * Add double points for combos
 * Add more levels with:
-** more monsters
-** bad guys or danger issues; ie. bombs
-** different score goals or moves
+  * more monsters
+  * bad guys or danger issues; ie. bombs
+  * different score goals or moves
 * Add more UI; ie. level menu
 * Add more animation
+* Manage Monster distribution
 
 ##Unsolved Problems
+* Rendering board without matches at start and after each turn
 
 ##Getting Started
 
